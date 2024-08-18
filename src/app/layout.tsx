@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Blinks Debugger",
   description: "Debug your blinks easily",
-  icons: "/logo-black.svg",
+  icons: "/logo.svg",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`px-5 md:px-10 ${inter.className}`}>
         <WalletProvider>{children}</WalletProvider>
       </body>
     </html>

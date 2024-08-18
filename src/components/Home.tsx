@@ -7,6 +7,7 @@ import { UnifiedWalletButton } from "@jup-ag/wallet-adapter";
 import Blinks from "./Blinks";
 import { validateURL } from "@/lib/helpers";
 import Image from "next/image";
+import Dashboard from "./Dashboard";
 
 const Home = () => {
   const [url, setUrl] = useState<string>("");
@@ -29,8 +30,8 @@ const Home = () => {
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex justify-between px-5 md:px-10 py-4 w-full h-fit">
-        <span className="flex gap-4 items-center text-xl tracking-wide">
+      <div className="flex justify-between py-4 w-full h-fit">
+        <span className="flex gap-4 items-center font-medium text-xl tracking-wide">
           <Image
             src="/logo.svg"
             alt="Debugger"
@@ -45,14 +46,18 @@ const Home = () => {
       <div className="flex items-center justify-center gap-2 mt-8 w-full">
         <Input
           onChange={(e) => setUrl(e.target.value)}
-          className="w-1/3"
+          className="w-1/3 bg-[#fff] border border-neutral-200 shadow-lg"
           value={url}
           placeholder="Enter URL"
         />
-        <Button onClick={getData} className="px-6">
+        <Button
+          onClick={getData}
+          className="px-6 py-[1.4rem] bg-neutral-800 hover:bg-black transition-colors duration-100 delay-100 text-white disabled:bg-neutral-600"
+        >
           Submit
         </Button>
       </div>
+      <Dashboard />
       {isSubmitted && (
         <div className="flex items-center justify-center">
           <div className="w-[30rem] mt-4">
