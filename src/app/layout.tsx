@@ -6,9 +6,9 @@ import WalletProvider from "@/context/Provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Blinks Validator",
+  title: "Blinks Debugger",
   description: "Debug your blinks easily",
-  icons: "/debugger.png",
+  icons: "/logo-black.svg",
 };
 
 export default function RootLayout({
