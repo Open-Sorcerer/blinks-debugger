@@ -1,13 +1,13 @@
 "use client";
 
+import { validateURL } from "@/lib/helpers";
+import { UnifiedWalletButton } from "@jup-ag/wallet-adapter";
+import Image from "next/image";
 import { useState } from "react";
+import Blinks from "./Blinks";
+import Dashboard from "./Dashboard";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { UnifiedWalletButton } from "@jup-ag/wallet-adapter";
-import Blinks from "./Blinks";
-import { validateURL } from "@/lib/helpers";
-import Image from "next/image";
-import Dashboard from "./Dashboard";
 
 const Home = () => {
   const [url, setUrl] = useState<string>("");

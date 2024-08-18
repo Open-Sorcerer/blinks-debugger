@@ -1,7 +1,7 @@
+import WalletProvider from "@/context/Provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import WalletProvider from "@/context/Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
