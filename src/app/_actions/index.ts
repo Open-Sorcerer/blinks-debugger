@@ -69,7 +69,7 @@ export async function simulateTransaction(
 ): Promise<SimulationResult> {
   try {
     const connection = new Connection(
-      cluster === "mainnet-beta"
+      cluster === Cluster.MainnetBeta
         ? "https://api.mainnet-beta.solana.com"
         : "https://api.devnet.solana.com",
       "confirmed"
