@@ -18,7 +18,7 @@ import {
 import {
   fetchRelevantAddresses,
   getTransactionDataFromUserSuppliedBytes,
-} from "../utils/simulation/versionedTx";
+} from "../../utils/simulation/versionedTx";
 
 export async function fetchBlinkMetadata(
   blinkURL: string
