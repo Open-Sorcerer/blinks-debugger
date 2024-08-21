@@ -32,7 +32,7 @@ export function getTransactionDataFromUserSuppliedBytes(bytes: Uint8Array): {
   let requiredSignaturesByteOffset = 1 + numSignatures * 64;
   if (
     VersionedMessage.deserializeMessageVersion(
-      bytes.slice(requiredSignaturesByteOffset)
+      bytes.slice(requiredSignaturesByteOffset),
     ) !== "legacy"
   ) {
     requiredSignaturesByteOffset++;
@@ -73,7 +73,7 @@ export function getTransactionDataFromUserSuppliedBytes(bytes: Uint8Array): {
 export async function fetchRelevantAddresses(
   connection: Connection,
   lookupTableKeys: PublicKey[],
-  relevantIndexes: Set<number>
+  relevantIndexes: Set<number>,
 ): Promise<PublicKey[]> {
   const relevantAddresses: PublicKey[] = [];
 
@@ -85,7 +85,7 @@ export async function fetchRelevantAddresses(
     ) {
       try {
         const lookupTableAccount = AddressLookupTableAccount.deserialize(
-          accountInfo.data
+          accountInfo.data,
         );
         if (lookupTableAccount && lookupTableAccount.addresses) {
           lookupTableAccount.addresses.forEach((address, index) => {

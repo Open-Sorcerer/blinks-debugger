@@ -21,7 +21,7 @@ import {
 } from "../../utils/simulation/versionedTx";
 
 export async function fetchBlinkMetadata(
-  blinkURL: string
+  blinkURL: string,
 ): Promise<ChessApiResponse | null> {
   try {
     const response = await fetch(blinkURL, {
@@ -42,7 +42,7 @@ export async function fetchBlinkMetadata(
 
 export async function fetchTransaction(
   blinkURL: string,
-  address: string
+  address: string,
 ): Promise<BlinkTransaction | null> {
   try {
     const response = await fetch(blinkURL, {
@@ -65,14 +65,14 @@ export async function fetchTransaction(
 
 export async function simulateTransaction(
   encodedTransaction: string,
-  cluster: Cluster
+  cluster: Cluster,
 ): Promise<SimulationResult> {
   try {
     const connection = new Connection(
       cluster === Cluster.MainnetBeta
         ? "https://api.mainnet-beta.solana.com"
         : "https://api.devnet.solana.com",
-      "confirmed"
+      "confirmed",
     );
 
     const decodedTransaction = Buffer.from(encodedTransaction, "base64");
@@ -90,7 +90,7 @@ export async function simulateTransaction(
 
     try {
       const buffer = Uint8Array.from(atob(encodedTransaction), (c) =>
-        c.charCodeAt(0)
+        c.charCodeAt(0),
       );
       transactionData = getTransactionDataFromUserSuppliedBytes(buffer);
 
@@ -104,7 +104,7 @@ export async function simulateTransaction(
 
       const relevantIndexes = new Set<number>();
       const addressTableLookupKeys = message.addressTableLookups.map(
-        (lookup) => new PublicKey(lookup.accountKey)
+        (lookup) => new PublicKey(lookup.accountKey),
       );
 
       message.addressTableLookups.forEach((lookup) => {
@@ -115,7 +115,7 @@ export async function simulateTransaction(
       const lookupTableAccounts = await fetchRelevantAddresses(
         connection,
         addressTableLookupKeys,
-        relevantIndexes
+        relevantIndexes,
       );
       accounts = [...message.staticAccountKeys, ...lookupTableAccounts];
       signers = accounts

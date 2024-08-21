@@ -13,9 +13,9 @@ export default function WalletProvider({
         autoConnect: true,
         env: "mainnet-beta",
         metadata: {
-          name: "Blinks Inspector",
+          name: "Blinks Debugger",
           description:
-            "Blinks Inspector is a tool for inspecting and interacting with Blinks.",
+            "Blinks debugger is a tool for inspecting and interacting with Blinks.",
           url: "https://www.blinks.io",
           iconUrls: ["/next.svg"],
         },
