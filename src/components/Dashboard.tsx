@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 export default function Dashboard() {
   return (
-    <div className="mt-5 md:m-8 p-5 lg:w-[50%] bg-white border border-neutral-200 rounded-lg">
+    <div className="mt-5 md:mt-8 p-5 lg:w-[50%] bg-white border border-neutral-200 rounded-lg">
       <Tabs defaultValue="validate" className="w-full">
         <TabsList className="w-full bg-neutral-200 rounded-xl">
           <TabsTrigger

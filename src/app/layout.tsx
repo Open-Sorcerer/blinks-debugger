@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`px-5 md:px-10 ${inter.className}`}>
+      <body className={inter.className}>
         <WalletProvider>{children}</WalletProvider>
       </body>
     </html>
