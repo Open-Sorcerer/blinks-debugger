@@ -37,6 +37,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-[#e9fffb] text-[#000];
+    @apply bg-[#effffc] text-[#000];
   }
 }

@@ -8,3 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatAddress(address: string) {
   return `${address.slice(0, 4)}..${address.slice(-3)}`;
 }
+
+export function formatData(data: string) {
+  return data.length > 15 ? `${data.slice(0, 14)}...` : data;
+}

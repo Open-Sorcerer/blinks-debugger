@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+const plugin = require("tailwindcss/plugin");
+
 const config = {
   darkMode: ["class"],
   content: [
@@ -74,7 +76,28 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(({ addBase, theme }: { addBase: any; theme: any }) => {
+      addBase({
+        ".scrollbar": {
+          overflowY: "auto",
+          scrollbarColor: `${theme("colors.neutral.100")} ${theme("colors.white")}`,
+          scrollbarWidth: "thin",
+        },
+        ".scrollbar::-webkit-scrollbar": {
+          height: "0.25px",
+          width: "0.25px",
+        },
+        ".scrollbar::-webkit-scrollbar-thumb": {
+          backgroundColor: theme("colors.neutral.100"),
+        },
+        ".scrollbar::-webkit-scrollbar-track-piece": {
+          backgroundColor: theme("colors.white"),
+        },
+      });
+    }),
+  ],
 } satisfies Config;
 
 export default config;
