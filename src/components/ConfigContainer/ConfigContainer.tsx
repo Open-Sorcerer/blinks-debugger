@@ -56,7 +56,7 @@ export default function ConfigContainer({
         </DialogContent>
       </Dialog>
       <Button
-        className="gap-2 bg-white border border-neutral-300 px-6 py-[1.4rem] transition-colors duration-100 delay-100 hover:bg-neutral-50"
+        className="gap-2 bg-white border border-neutral-300 min-w-[8.5rem] px-6 py-[1.4rem] transition-colors duration-100 delay-100 hover:bg-neutral-50"
         onClick={() => {
           setMode(!mode);
         }}

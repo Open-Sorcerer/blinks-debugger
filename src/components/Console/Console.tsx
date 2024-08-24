@@ -16,7 +16,7 @@ export default function Console() {
         <span className="bg-neutral-100 text-neutral-700 font-medium px-4 py-2.5 rounded-t-xl">
           Signatures
         </span>
-        <div className="px-4 py-2">
+        <div className="px-4 py-2 overflow-auto scroll-smooth scrollbar">
           <div className="grid grid-cols-[80px_200px_180px_150px_100px] py-1 text-neutral-500 border-b border-neutral-200">
             {signatureSectionHeader.map((header, index) => (
               <p className="uppercase" key={index}>
@@ -64,10 +64,10 @@ export default function Console() {
         <span className="bg-neutral-100 text-neutral-700 font-medium px-4 py-2.5 rounded-t-xl">
           Account List
         </span>
-        <div className="flex flex-col gap-2 p-2">
+        <div className="flex flex-col gap-2 p-2 overflow-auto scroll-smooth scrollbar">
           {accountList.map((account, index) => (
             <span
-              className="flex px-3 py-2.5 items-center justify-between border border-neutral-200 text-neutral-500 rounded-lg"
+              className="flex w-[40rem] md:w-full px-3 py-2.5 items-center justify-between border border-neutral-200 text-neutral-500 rounded-lg"
               key={index}
             >
               <p>Account #{index + 1}</p>
