@@ -1,5 +1,4 @@
-import { formatAddress } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -8,43 +7,28 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { formatAddress } from "@/lib/utils";
+import { IoMdRocket } from "react-icons/io";
+import { LuRefreshCcw } from "react-icons/lu";
+import { MdBuild } from "react-icons/md";
 
-interface IForm {
-  url: string;
-  setUrl: (url: string) => void;
+interface ConfigContainerProps {
   address: string;
   setAddress: (address: string) => void;
-  getData: () => void;
-  className?: string;
+  mode: boolean;
+  setMode: (mode: boolean) => void;
 }
 
-export default function Form({
-  url,
-  setUrl,
+export default function ConfigContainer({
   address,
   setAddress,
-  getData,
-  className,
-}: IForm) {
+  mode,
+  setMode,
+}: ConfigContainerProps) {
   return (
     <>
-      <Input
-        onChange={(e) => setUrl(e.target.value)}
-        className={
-          `bg-[#fff] border border-neutral-200 shadow ` +
-          `${className && className}`
-        }
-        value={url}
-        placeholder="Enter URL"
-      />
-      <Button
-        onClick={getData}
-        className="px-6 py-[1.4rem] bg-neutral-800 hover:bg-black transition-colors duration-100 delay-100 text-white disabled:bg-neutral-600"
-      >
-        Submit
-      </Button>
       <Dialog>
         <DialogTrigger asChild>
           <Button className="px-6 py-[1.4rem] bg-neutral-800 hover:bg-black transition-colors duration-100 delay-100 text-white disabled:bg-neutral-600">
@@ -71,6 +55,23 @@ export default function Form({
           </DialogClose>
         </DialogContent>
       </Dialog>
+      <Button
+        className="gap-2 bg-white border border-neutral-300 px-6 py-[1.4rem] transition-colors duration-100 delay-100 hover:bg-neutral-50"
+        onClick={() => {
+          setMode(!mode);
+        }}
+      >
+        {mode ? <IoMdRocket size={20} /> : <MdBuild size={20} />}{" "}
+        {mode ? "Mainnet" : "Testnet"}
+      </Button>
+      <Button
+        className="bg-white border border-neutral-300 px-3 py-[1.4rem] transition-colors duration-100 delay-100 hover:bg-neutral-50"
+        onClick={() => {
+          // TODO: Add revalidate blink
+        }}
+      >
+        <LuRefreshCcw size={24} className="text-neutral-600" />
+      </Button>
     </>
   );
 }

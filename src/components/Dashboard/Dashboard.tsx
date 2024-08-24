@@ -1,8 +1,8 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Dashboard() {
   return (
-    <div className="mt-5 md:mt-8 p-5 lg:w-[50%] bg-white border border-neutral-200 rounded-lg">
+    <div className="mt-6 p-5 lg:w-[60%] bg-white border border-neutral-200 rounded-xl">
       <Tabs defaultValue="validate" className="w-full">
         <TabsList className="w-full bg-neutral-200 rounded-xl">
           <TabsTrigger

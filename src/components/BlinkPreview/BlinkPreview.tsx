@@ -3,10 +3,10 @@ import { useActionSolanaWalletAdapter } from "@dialectlabs/blinks/hooks/solana";
 import "@dialectlabs/blinks/index.css";
 import { useEffect, useState } from "react";
 
-interface BlinksProps {
+interface BlinkPreviewProps {
   actionUrl: string;
 }
-const Blinks = ({ actionUrl }: BlinksProps) => {
+export default function BlinkPreview({ actionUrl }: BlinkPreviewProps) {
   const [action, setAction] = useState<Action | null>(null);
   const { adapter } = useActionSolanaWalletAdapter(
     process.env.NEXT_PUBLIC_RPC!,
@@ -40,6 +40,4 @@ const Blinks = ({ actionUrl }: BlinksProps) => {
       websiteText={new URL(actionUrl).hostname}
     />
   ) : null;
-};
-
-export default Blinks;
+}
