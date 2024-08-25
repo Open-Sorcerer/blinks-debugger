@@ -26,7 +26,10 @@ export default function Console() {
           </div>
           <div className="flex flex-col gap-1 pt-2">
             {signatureData.map((data, index) => (
-              <span className="grid grid-cols-[80px_200px_180px_150px_100px] py-1 text-neutral-700 border-b border-neutral-100">
+              <span
+                className="grid grid-cols-[80px_200px_180px_150px_100px] py-1 text-neutral-700 border-b border-neutral-100"
+                key={index}
+              >
                 <p>{index + 1}</p>
                 <button
                   className="flex w-fit h-fit gap-2 items-center text-indigo-500"
