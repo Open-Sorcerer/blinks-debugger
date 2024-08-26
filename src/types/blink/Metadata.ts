@@ -25,7 +25,7 @@ interface ChessActionParameter {
 }
 
 export interface BlinkTransaction {
-  tx: string;
+  transaction: string;
   message?: string;
 }
 

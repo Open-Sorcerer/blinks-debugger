@@ -3,7 +3,12 @@ import Console from "@/components/Console/Console";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dashboardTabs } from "@/lib/constants";
 
-export default function Dashboard() {
+interface DashboardProps {
+  AccountList: string[];
+  Logs: string[];
+}
+
+export default function Dashboard({ AccountList, Logs }: DashboardProps) {
   return (
     <div className="mt-6 p-5 lg:w-[60%] bg-white border border-neutral-200 rounded-xl">
       <Tabs defaultValue="validate" className="w-full overflow-auto">
@@ -22,7 +27,7 @@ export default function Dashboard() {
           <ActionValidator />
         </TabsContent>
         <TabsContent value="console">
-          <Console />
+          <Console AccountList={AccountList} Logs={Logs} />
         </TabsContent>
         <TabsContent value="request">
           Verify the requests and response here

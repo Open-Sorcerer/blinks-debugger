@@ -1,18 +1,24 @@
 "use client";
 
+import { fetchTransaction, simulateTransaction } from "@/app/_actions";
+import { useWallet } from "@jup-ag/wallet-adapter";
+
 import BlinkPreview from "@/components/BlinkPreview/BlinkPreview";
 import ConfigContainer from "@/components/ConfigContainer/ConfigContainer";
 import Dashboard from "@/components/Dashboard/Dashboard";
 import InputForm from "@/components/InputForm/InputForm";
 import Navbar from "@/components/Navbar/Navbar";
 import { validateURL } from "@/lib/helpers";
+import { Cluster, SimulationResult } from "@/types/blink/Metadata";
 import { useState } from "react";
 
 export default function Home() {
+  const { publicKey } = useWallet();
   const [url, setUrl] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
+  const [address, setAddress] = useState<string>(publicKey?.toBase58() ?? "");
   const [mode, setMode] = useState<boolean>(true);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [simulatedData, setSimulatedData] = useState<SimulationResult>();
 
   const getData = async () => {
     try {
@@ -23,7 +29,13 @@ export default function Home() {
       if (data) {
         setIsSubmitted(true);
       }
-      console.log(data);
+      const encodedTxn = await fetchTransaction(url, address);
+      const simulation = await simulateTransaction(
+        encodedTxn?.transaction!,
+        Cluster.MainnetBeta,
+      );
+      console.log(simulation.accounts, simulation.logs);
+      setSimulatedData(simulation);
     } catch (error) {
       console.error(error);
     }
@@ -37,7 +49,7 @@ export default function Home() {
           {/* Takes input of blink url */}
           <InputForm url={url} setUrl={setUrl} getData={getData} />
         </div>
-        <div className="flex gap-4 items-center mt-5">
+        <div className="flex gap-4 items-center justify-end mt-5">
           {/* Set environment and identifier from Config */}
           <ConfigContainer
             address={address}
@@ -47,15 +59,20 @@ export default function Home() {
           />
         </div>
         {/* Blink debugged results show in dashboard with respective tabs. */}
-        <Dashboard />
-        {isSubmitted && (
-          <div className="flex items-center justify-center">
-            <div className="w-[30rem] mt-4">
-              {/* Show preview of Blink */}
-              <BlinkPreview actionUrl={url} />
+        <div className="flex justify-between">
+          {isSubmitted && (
+            <div className="flex items-center justify-center">
+              <div className="w-[30rem] -mt-12">
+                {/* Show preview of Blink */}
+                <BlinkPreview actionUrl={url} />
+              </div>
             </div>
-          </div>
-        )}
+          )}
+          <Dashboard
+            AccountList={simulatedData?.accounts as string[]}
+            Logs={simulatedData?.logs as string[]}
+          />
+        </div>
       </div>
     </div>
   );

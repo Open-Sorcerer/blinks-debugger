@@ -1,7 +1,13 @@
 async function validateURL(url: string) {
-  const urlObj = new URL(url);
-  const baseUrl = `${urlObj.origin}${urlObj.pathname.replace(/\/$/, "")}`;
+  let urlObj = new URL(url);
+  let baseUrl = `${urlObj.origin}${urlObj.pathname.replace(/\/$/, "")}`;
   const queryParams = urlObj.search;
+
+  // Check if the URL contains '/api/' and trim it to the base URL
+  if (urlObj.pathname.includes("/api/")) {
+    baseUrl = `${urlObj.origin}`;
+    urlObj = new URL(baseUrl);
+  }
 
   const actionsUrl = `${baseUrl}/actions.json`;
   const response = await fetch(actionsUrl);

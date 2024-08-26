@@ -34,10 +34,6 @@ export default function BlinkPreview({ actionUrl }: BlinkPreviewProps) {
   const { isRegistryLoaded } = useActionsRegistryInterval();
 
   return action && isRegistryLoaded ? (
-    <Blink
-      stylePreset={"x-dark"}
-      action={action}
-      websiteText={new URL(actionUrl).hostname}
-    />
+    <Blink action={action} websiteText={new URL(actionUrl).hostname} />
   ) : null;
 }

@@ -1,14 +1,14 @@
-import {
-  accountList,
-  signatureData,
-  signatureSectionHeader,
-  simulationData,
-} from "@/lib/constants";
+import { signatureData, signatureSectionHeader } from "@/lib/constants";
 import { formatData } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { IoCopyOutline } from "react-icons/io5";
 
-export default function Console() {
+interface ConsoleProps {
+  AccountList: string[];
+  Logs: string[];
+}
+
+export default function Console({ AccountList, Logs }: ConsoleProps) {
   return (
     <div className="flex flex-col gap-4 max-h-[34rem] scroll-smooth scrollbar">
       {/* SIGNATURE */}
@@ -68,7 +68,7 @@ export default function Console() {
           Account List
         </span>
         <div className="flex flex-col gap-2 p-2 overflow-auto scroll-smooth scrollbar">
-          {accountList.map((account, index) => (
+          {AccountList?.map((account, index) => (
             <span
               className="flex w-[40rem] md:w-full px-3 py-2.5 items-center justify-between border border-neutral-200 text-neutral-500 rounded-lg"
               key={index}
@@ -93,7 +93,7 @@ export default function Console() {
           Logs
         </span>
         <div className="flex flex-col gap-1 p-3 overflow-auto scroll-smooth scrollbar">
-          {simulationData.map((data, index) => (
+          {Logs?.map((data, index) => (
             <span
               className="grid grid-cols-[40px_80px] items-center text-neutral-700"
               key={index}
