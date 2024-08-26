@@ -187,7 +187,7 @@ export async function simulateTransaction(
       return {
         success: false,
         error: JSON.stringify(simulation.err),
-        accountInfo: accountInfo.map((info) => ({
+        accounts: accountInfo.map((info) => ({
           ...info,
           pubkey: info.pubkey.toBase58(),
         })),
@@ -197,7 +197,7 @@ export async function simulateTransaction(
 
     return {
       success: true,
-      accountInfo: accountInfo.map((info) => ({
+      accounts: accountInfo.map((info) => ({
         ...info,
         pubkey: info.pubkey.toBase58(),
       })),
@@ -210,7 +210,7 @@ export async function simulateTransaction(
     return {
       success: false,
       error: error instanceof Error ? error.message : String(error),
-      accountInfo: [],
+      accounts: [],
       signatureDetails: [],
     };
   }

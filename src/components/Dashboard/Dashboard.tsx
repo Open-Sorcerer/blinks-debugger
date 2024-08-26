@@ -1,10 +1,15 @@
 import ActionValidator from "@/components/ActionValidator/ActionValidator";
-import Console from "@/components/Console/Console";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dashboardTabs } from "@/lib/constants";
+import { AccountInfoObject } from "@/types/blink/Metadata";
+import { PublicKey } from "@solana/web3.js";
 
 interface DashboardProps {
-  AccountList: string[];
+  AccountList: Array<{
+    index: number;
+    pubkey: PublicKey | string;
+    accountInfo?: AccountInfoObject;
+  }>;
   Logs: string[];
 }
 
@@ -27,7 +32,7 @@ export default function Dashboard({ AccountList, Logs }: DashboardProps) {
           <ActionValidator />
         </TabsContent>
         <TabsContent value="console">
-          <Console AccountList={AccountList} Logs={Logs} />
+          {/* <Console AccountList={AccountList} Logs={Logs} /> */}
         </TabsContent>
         <TabsContent value="request">
           Verify the requests and response here

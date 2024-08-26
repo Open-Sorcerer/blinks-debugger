@@ -31,16 +31,28 @@ export interface BlinkTransaction {
   message?: string;
 }
 
+export interface AccountInfoObject {
+  index: number;
+  pubkey: PublicKey | string;
+  accountInfo: {
+    friendlyName?: string;
+    abbreviation?: string;
+    category?: string;
+    network?: string;
+    tags?: [];
+    logoURI?: string | null;
+    flag?: string | null;
+  };
+}
+
 export interface SimulationResult {
   success: boolean;
   error?: string;
-  accountInfo:
-    | Array<{
-        index: number;
-        pubkey: PublicKey | string;
-        accountInfo?: any;
-      }>
-    | string[];
+  accounts: Array<{
+    index: number;
+    pubkey: PublicKey | string;
+    accountInfo?: AccountInfoObject;
+  }>;
   logs?: string[] | null;
   unitsConsumed?: number | null;
   signatureDetails: Array<{
