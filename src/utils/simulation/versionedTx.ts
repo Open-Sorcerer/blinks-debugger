@@ -74,11 +74,22 @@ export async function fetchRelevantAddresses(
   connection: Connection,
   lookupTableKeys: PublicKey[],
   relevantIndexes: Set<number>,
-): Promise<PublicKey[]> {
-  const relevantAddresses: PublicKey[] = [];
+): Promise<
+  Array<{
+    index: number;
+    pubkey: PublicKey;
+    accountInfo?: any;
+  }>
+> {
+  const relevantAddresses: Array<{
+    index: number;
+    pubkey: PublicKey;
+    accountInfo?: any;
+  }> = [];
 
   for (const key of lookupTableKeys) {
     const accountInfo = await connection.getAccountInfo(key);
+
     if (
       accountInfo?.data &&
       accountInfo.owner.equals(AddressLookupTableProgram.programId)
@@ -88,16 +99,65 @@ export async function fetchRelevantAddresses(
           accountInfo.data,
         );
         if (lookupTableAccount && lookupTableAccount.addresses) {
-          lookupTableAccount.addresses.forEach((address, index) => {
+          const entries = Array.from(lookupTableAccount.addresses.entries());
+          for (const [index, address] of entries) {
             if (relevantIndexes.has(index)) {
-              relevantAddresses.push(address);
+              relevantAddresses.push({
+                index,
+                pubkey: address,
+              });
             }
-          });
+          }
         }
       } catch {
         console.error("Failed to deserialize address lookup table account");
       }
     }
+  }
+
+  const allAccountKeys = new Set([
+    ...relevantAddresses.map((addr) => addr.pubkey.toBase58()),
+  ]);
+
+  try {
+    const solanaFmResponse = await fetch("https://api.solana.fm/v0/accounts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        accountHashes: Array.from(allAccountKeys),
+        fields: ["data"],
+      }),
+    });
+
+    if (!solanaFmResponse.ok) {
+      throw new Error(
+        `Solana FM API response error: ${solanaFmResponse.statusText}`,
+      );
+    }
+
+    const data = await solanaFmResponse.json();
+
+    const accountData = data.result.reduce(
+      (acc: any, item: any) => {
+        if (!acc[item.accountHash]) {
+          acc[item.accountHash] = [];
+        }
+        acc[item.accountHash].push(item.data);
+        return acc;
+      },
+      {} as { [key: string]: any[] },
+    );
+
+    relevantAddresses.forEach((addr) => {
+      const addrString = addr.pubkey.toBase58();
+      if (accountData[addrString]) {
+        addr.accountInfo = accountData[addrString];
+      }
+    });
+  } catch (error) {
+    console.error("Failed to fetch data from Solana FM API", error);
   }
 
   return relevantAddresses;

@@ -1,3 +1,5 @@
+import { PublicKey } from "@solana/web3.js";
+
 export enum Cluster {
   MainnetBeta = "mainnet-beta",
   Devnet = "devnet",
@@ -32,8 +34,19 @@ export interface BlinkTransaction {
 export interface SimulationResult {
   success: boolean;
   error?: string;
-  accounts?: String[];
-  logs?: Array<string> | null;
-  unitsConsumed?: number;
-  signers?: string[];
+  accountInfo:
+    | Array<{
+        index: number;
+        pubkey: PublicKey | string;
+        accountInfo?: any;
+      }>
+    | string[];
+  logs?: string[] | null;
+  unitsConsumed?: number | null;
+  signatureDetails: Array<{
+    signature: string;
+    signer: string;
+    validity: "Valid" | "Invalid";
+    details: string;
+  }>;
 }

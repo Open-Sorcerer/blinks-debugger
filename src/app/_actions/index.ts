@@ -15,6 +15,7 @@ import {
   VersionedMessage,
   VersionedTransaction,
 } from "@solana/web3.js";
+import bs58 from "bs58";
 import {
   fetchRelevantAddresses,
   getTransactionDataFromUserSuppliedBytes,
@@ -78,8 +79,11 @@ export async function simulateTransaction(
     const decodedTransaction = Buffer.from(encodedTransaction, "base64");
 
     let simulationResponse: RpcResponseAndContext<SimulatedTransactionResponse>;
-    let accounts: PublicKey[];
-    let signers: string[];
+    let accountInfo: Array<{
+      index: number;
+      pubkey: PublicKey;
+      accountInfo?: any;
+    }> = [];
     let transactionData:
       | {
           message: VersionedMessage;
@@ -87,6 +91,13 @@ export async function simulateTransaction(
           signatures?: string[];
         }
       | undefined;
+
+    let signatureDetails: Array<{
+      signature: string;
+      signer: string;
+      validity: "Valid" | "Invalid";
+      details: string;
+    }> = [];
 
     try {
       const buffer = Uint8Array.from(atob(encodedTransaction), (c) =>
@@ -117,10 +128,30 @@ export async function simulateTransaction(
         addressTableLookupKeys,
         relevantIndexes,
       );
-      accounts = [...message.staticAccountKeys, ...lookupTableAccounts];
-      signers = accounts
+
+      accountInfo = [
+        ...message.staticAccountKeys.map((pubkey, index) => ({
+          index,
+          pubkey,
+          accountInfo: null,
+        })),
+        ...lookupTableAccounts,
+      ];
+
+      const signers = accountInfo
         .slice(0, message.header.numRequiredSignatures)
-        .map((signer) => signer.toBase58());
+        .map((info) => info.pubkey.toBase58());
+
+      transactionData.signatures?.forEach((signature, index) => {
+        const signer = signers[index];
+        signatureDetails.push({
+          signature,
+          signer,
+          validity:
+            signature !== bs58.encode(Buffer.alloc(64)) ? "Valid" : "Invalid",
+          details: index === 0 ? "Fee Payer" : "Signer",
+        });
+      });
     } catch (versionedError) {
       console.log("Falling back to Legacy Transaction", versionedError);
 
@@ -128,10 +159,26 @@ export async function simulateTransaction(
       simulationResponse = await connection.simulateTransaction(transaction);
 
       const message = transaction.compileMessage();
-      accounts = message.accountKeys;
-      signers = accounts
+      accountInfo = message.accountKeys.map((pubkey, index) => ({
+        index,
+        pubkey,
+        accountInfo: null,
+      }));
+
+      const signers = accountInfo
         .slice(0, message.header.numRequiredSignatures)
-        .map((signer) => signer.toBase58());
+        .map((info) => info.pubkey.toBase58());
+
+      transaction.signatures.forEach((signatureObj, index) => {
+        const signature = signatureObj.signature;
+        const signer = signers[index];
+        signatureDetails.push({
+          signature: signature?.toString() || "No Signature",
+          signer,
+          validity: signature ? "Valid" : "Invalid",
+          details: index === 0 ? "Fee Payer" : "Signer",
+        });
+      });
     }
 
     const simulation = simulationResponse.value;
@@ -140,24 +187,31 @@ export async function simulateTransaction(
       return {
         success: false,
         error: JSON.stringify(simulation.err),
-        accounts: accounts.map((acc) => acc.toBase58()),
-        signers,
+        accountInfo: accountInfo.map((info) => ({
+          ...info,
+          pubkey: info.pubkey.toBase58(),
+        })),
+        signatureDetails,
       };
     }
 
     return {
       success: true,
-      accounts: accounts.map((acc) => acc.toBase58()),
+      accountInfo: accountInfo.map((info) => ({
+        ...info,
+        pubkey: info.pubkey.toBase58(),
+      })),
       logs: simulation.logs,
       unitsConsumed: simulation.unitsConsumed,
-      signers,
+      signatureDetails,
     };
   } catch (error) {
     console.error("Error in simulateTransaction:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : String(error),
-      signers: [],
+      accountInfo: [],
+      signatureDetails: [],
     };
   }
 }

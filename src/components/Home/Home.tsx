@@ -34,7 +34,7 @@ export default function Home() {
         encodedTxn?.transaction!,
         Cluster.MainnetBeta,
       );
-      console.log(simulation.accounts, simulation.logs);
+      console.log(simulation.accountInfo, simulation.logs);
       setSimulatedData(simulation);
     } catch (error) {
       console.error(error);
@@ -69,7 +69,7 @@ export default function Home() {
             </div>
           )}
           <Dashboard
-            AccountList={simulatedData?.accounts as string[]}
+            AccountList={simulatedData?.accountInfo as string[]}
             Logs={simulatedData?.logs as string[]}
           />
         </div>
