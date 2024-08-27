@@ -50,7 +50,7 @@ export interface AccountInfo {
 export interface SimulationResult {
   success: boolean;
   error?: string;
-  accounts: Array<AccountInfoObject>;
+  accounts: Array<AccountInfoObject> | null;
   logs?: string[] | null;
   unitsConsumed?: number | null;
   signatureDetails: Array<SignatureDetails>;

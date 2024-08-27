@@ -1,6 +1,8 @@
 "use server";
 
 import {
+  AccountInfo,
+  AccountInfoObject,
   BlinkTransaction,
   ChessApiResponse,
   Cluster,
@@ -85,7 +87,7 @@ export async function simulateTransaction(
     let accountInfo: Array<{
       index: number;
       pubkey: PublicKey;
-      accountInfo?: any;
+      accountInfo?: AccountInfo[] | null;
     }> = [];
     let transactionData:
       | {
@@ -165,7 +167,8 @@ export async function simulateTransaction(
       accountInfo = message.accountKeys.map((pubkey, index) => ({
         index,
         pubkey,
-        accountInfo: null,
+        accountInfo: accountInfo.find((info) => info.pubkey.equals(pubkey))
+          ?.accountInfo,
       }));
 
       const signers = accountInfo
@@ -191,9 +194,10 @@ export async function simulateTransaction(
         success: false,
         error: JSON.stringify(simulation.err),
         accounts: accountInfo.map((info) => ({
-          ...info,
+          index: info.index,
           pubkey: info.pubkey.toBase58(),
-        })),
+          accountInfo: info.accountInfo,
+        })) as AccountInfoObject[],
         signatureDetails,
       };
     }
@@ -201,9 +205,10 @@ export async function simulateTransaction(
     return {
       success: true,
       accounts: accountInfo.map((info) => ({
-        ...info,
+        index: info.index,
         pubkey: info.pubkey.toBase58(),
-      })),
+        accountInfo: info.accountInfo,
+      })) as AccountInfoObject[],
       logs: simulation.logs,
       unitsConsumed: simulation.unitsConsumed,
       signatureDetails,

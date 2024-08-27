@@ -9,10 +9,12 @@ export async function POST(req: NextRequest) {
     Cluster.MainnetBeta,
   );
 
-  for (let index = 0; index < simulate.accounts.length; index++) {
-    const accountInfo = simulate.accounts[index];
+  if (simulate.accounts) {
+    for (let index = 0; index < simulate.accounts.length; index++) {
+      const accountInfo = simulate.accounts[index];
 
-    console.log("accountInfo", accountInfo.accountInfo);
+      console.log("accountInfo", accountInfo.accountInfo[0]);
+    }
   }
 
   return NextResponse.json(simulate);
