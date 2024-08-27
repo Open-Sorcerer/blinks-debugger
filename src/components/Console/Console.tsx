@@ -1,14 +1,20 @@
-import { signatureData, signatureSectionHeader } from "@/lib/constants";
+import { signatureSectionHeader } from "@/lib/constants";
 import { formatData } from "@/lib/utils";
+import { AccountInfoObject, SignatureDetails } from "@/types/blink/Metadata";
 import toast from "react-hot-toast";
 import { IoCopyOutline } from "react-icons/io5";
 
 interface ConsoleProps {
-  AccountList: string[];
+  AccountList: Array<AccountInfoObject>;
   Logs: string[];
+  Signatures: Array<SignatureDetails>;
 }
 
-export default function Console({ AccountList, Logs }: ConsoleProps) {
+export default function Console({
+  AccountList,
+  Logs,
+  Signatures,
+}: ConsoleProps) {
   return (
     <div className="flex flex-col gap-4 max-h-[34rem] scroll-smooth scrollbar">
       {/* SIGNATURE */}
@@ -25,40 +31,50 @@ export default function Console({ AccountList, Logs }: ConsoleProps) {
             ))}
           </div>
           <div className="flex flex-col gap-1 pt-2">
-            {signatureData.map((data, index) => (
-              <span
-                className="grid grid-cols-[80px_200px_180px_150px_100px] py-1 text-neutral-700 border-b border-neutral-100"
-                key={index}
-              >
-                <p>{index + 1}</p>
-                <button
-                  className="flex w-fit h-fit gap-2 items-center text-indigo-500"
-                  onClick={() => {
-                    navigator.clipboard.writeText(data.signature);
-                    toast.success("Copied");
-                  }}
-                >
-                  {formatData(data.signature)} <IoCopyOutline />
-                </button>
-                <button
-                  className="flex w-fit h-fit gap-2 items-center text-indigo-500"
-                  onClick={() => {
-                    navigator.clipboard.writeText(data.signer);
-                    toast.success("Copied");
-                  }}
-                >
-                  {formatData(data.signer)} <IoCopyOutline />
-                </button>
-                <p
-                  className={`w-fit h-fit px-4 py-1 rounded-2xl text-sm ${data.validity.toLocaleLowerCase() === "valid" ? "bg-emerald-50 text-emerald-500" : "bg-red-50 text-red-500"}`}
-                >
-                  {data.validity}
-                </p>
-                <p className="w-fit h-fit bg-blue-50 text-blue-500 text-sm px-4 py-1 rounded-2xl">
-                  Fee Payer
-                </p>
-              </span>
-            ))}
+            {Signatures?.map(
+              ({ signature, signer, validity, details }, index) => {
+                console.log("signature", {
+                  signature,
+                  signer,
+                  validity,
+                  details,
+                });
+                return (
+                  <span
+                    className="grid grid-cols-[80px_200px_180px_150px_100px] py-1 text-neutral-700 border-b border-neutral-100"
+                    key={index}
+                  >
+                    <p>{index + 1}</p>
+                    <button
+                      className="flex w-fit h-fit gap-2 items-center text-indigo-500"
+                      onClick={() => {
+                        navigator.clipboard.writeText(signature);
+                        toast.success("Copied");
+                      }}
+                    >
+                      {formatData(signature)} <IoCopyOutline />
+                    </button>
+                    <button
+                      className="flex w-fit h-fit gap-2 items-center text-indigo-500"
+                      onClick={() => {
+                        navigator.clipboard.writeText(signer);
+                        toast.success("Copied");
+                      }}
+                    >
+                      {formatData(signer)} <IoCopyOutline />
+                    </button>
+                    <p
+                      className={`w-fit h-fit px-4 py-1 rounded-2xl text-sm ${validity.toLocaleLowerCase() === "valid" ? "bg-emerald-50 text-emerald-500" : "bg-red-50 text-red-500"}`}
+                    >
+                      {validity}
+                    </p>
+                    <p className="w-fit h-fit bg-blue-50 text-blue-500 text-sm px-4 py-1 rounded-2xl">
+                      {details}
+                    </p>
+                  </span>
+                );
+              },
+            )}
           </div>
         </div>
       </div>
@@ -68,23 +84,27 @@ export default function Console({ AccountList, Logs }: ConsoleProps) {
           Account List
         </span>
         <div className="flex flex-col gap-2 p-2 overflow-auto scroll-smooth scrollbar">
-          {AccountList?.map((account, index) => (
-            <span
-              className="flex w-[40rem] md:w-full px-3 py-2.5 items-center justify-between border border-neutral-200 text-neutral-500 rounded-lg"
-              key={index}
-            >
-              <p>Account #{index + 1}</p>
-              <button
-                className="flex w-fit h-fit gap-2 items-center text-violet-500"
-                onClick={() => {
-                  navigator.clipboard.writeText(account);
-                  toast.success("Copied");
-                }}
+          {AccountList?.map(({ pubkey, accountInfo }, index) => {
+            return (
+              <span
+                className="flex w-[40rem] md:w-full px-3 py-2.5 items-center justify-between border border-neutral-200 text-neutral-500 rounded-lg"
+                key={`${index}-index`}
               >
-                {account} <IoCopyOutline />
-              </button>
-            </span>
-          ))}
+                <p>Account #{index + 1}</p>
+                <button
+                  key={`${index}-button`}
+                  className="flex w-fit h-fit gap-2 items-center text-violet-500"
+                  onClick={() => {
+                    navigator.clipboard.writeText(pubkey.toString());
+                    toast.success("Copied");
+                  }}
+                >
+                  {accountInfo?.[0].friendlyName ?? pubkey.toString()}{" "}
+                  <IoCopyOutline />
+                </button>
+              </span>
+            );
+          })}
         </div>
       </div>
       {/* Transaction Simulation */}
@@ -93,15 +113,18 @@ export default function Console({ AccountList, Logs }: ConsoleProps) {
           Logs
         </span>
         <div className="flex flex-col gap-1 p-3 overflow-auto scroll-smooth scrollbar">
-          {Logs?.map((data, index) => (
-            <span
-              className="grid grid-cols-[40px_80px] items-center text-neutral-700"
-              key={index}
-            >
-              <p className="text-neutral-400">{index + 1}</p>
-              <p className="text-nowrap">{data}</p>
-            </span>
-          ))}
+          {Logs?.map((data, index) => {
+            console.log("data", data);
+            return (
+              <span
+                className="grid grid-cols-[40px_80px] items-center text-neutral-700"
+                key={index}
+              >
+                <p className="text-neutral-400">{index + 1}</p>
+                <p className="text-nowrap">{data}</p>
+              </span>
+            );
+          })}
         </div>
       </div>
     </div>

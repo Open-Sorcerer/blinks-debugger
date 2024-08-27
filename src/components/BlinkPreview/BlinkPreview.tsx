@@ -1,12 +1,12 @@
 import { Action, Blink, useActionsRegistryInterval } from "@dialectlabs/blinks";
 import { useActionSolanaWalletAdapter } from "@dialectlabs/blinks/hooks/solana";
 import "@dialectlabs/blinks/index.css";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 interface BlinkPreviewProps {
   actionUrl: string;
 }
-export default function BlinkPreview({ actionUrl }: BlinkPreviewProps) {
+function BlinkPreview({ actionUrl }: BlinkPreviewProps) {
   const [action, setAction] = useState<Action | null>(null);
   const { adapter } = useActionSolanaWalletAdapter(
     process.env.NEXT_PUBLIC_RPC!,
@@ -37,3 +37,5 @@ export default function BlinkPreview({ actionUrl }: BlinkPreviewProps) {
     <Blink action={action} websiteText={new URL(actionUrl).hostname} />
   ) : null;
 }
+
+export default memo(BlinkPreview);

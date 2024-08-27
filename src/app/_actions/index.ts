@@ -46,6 +46,7 @@ export async function fetchTransaction(
   address: string,
 ): Promise<BlinkTransaction | null> {
   try {
+    console.log("fetching transaction", blinkURL, address);
     const response = await fetch(blinkURL, {
       method: "POST",
       body: JSON.stringify({ account: address }),
@@ -57,7 +58,8 @@ export async function fetchTransaction(
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return (await response.json()) as BlinkTransaction;
+    const blinkTxn = await response.json();
+    return blinkTxn;
   } catch (error) {
     console.error("Error fetching transaction:", error);
     return null;
@@ -68,6 +70,7 @@ export async function simulateTransaction(
   encodedTransaction: string,
   cluster: Cluster,
 ): Promise<SimulationResult> {
+  console.log("encodedTransaction", encodedTransaction);
   try {
     const connection = new Connection(
       cluster === Cluster.MainnetBeta

@@ -1,7 +1,6 @@
 "use client";
 
 import { fetchTransaction, simulateTransaction } from "@/app/_actions";
-import { useWallet } from "@jup-ag/wallet-adapter";
 
 import BlinkPreview from "@/components/BlinkPreview/BlinkPreview";
 import ConfigContainer from "@/components/ConfigContainer/ConfigContainer";
@@ -10,26 +9,34 @@ import InputForm from "@/components/InputForm/InputForm";
 import Navbar from "@/components/Navbar/Navbar";
 import { validateURL } from "@/lib/helpers";
 import { Cluster, SimulationResult } from "@/types/blink/Metadata";
-import { useState } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useLayoutEffect, useState } from "react";
 
-export default function Home() {
+function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { publicKey } = useWallet();
   const [url, setUrl] = useState<string>("");
-  const [address, setAddress] = useState<string>(publicKey?.toBase58() ?? "");
+  const [address, setAddress] = useState<string>("");
   const [mode, setMode] = useState<boolean>(true);
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [simulatedData, setSimulatedData] = useState<SimulationResult>();
+
+  useEffect(() => {
+    if (publicKey) {
+      setAddress(publicKey.toBase58());
+    }
+  }, [publicKey]);
 
   const getData = async () => {
     try {
       const actionUrl = await validateURL(url);
-      setUrl(actionUrl ?? url);
-      const response = await fetch(actionUrl ?? url);
-      const data = await response.json();
-      if (data) {
-        setIsSubmitted(true);
+      if (!actionUrl) {
+        return;
       }
-      const encodedTxn = await fetchTransaction(url, address);
+      router.push(`/?url=${encodeURIComponent(actionUrl)}`);
+      const encodedTxn = await fetchTransaction(actionUrl, address);
+      console.log("encoded", encodedTxn);
       const simulation = await simulateTransaction(
         encodedTxn?.transaction!,
         Cluster.MainnetBeta,
@@ -40,6 +47,13 @@ export default function Home() {
       console.error(error);
     }
   };
+
+  useLayoutEffect(() => {
+    if (searchParams.get("url")) {
+      setUrl(searchParams.get("url")!);
+      getData();
+    }
+  }, []);
 
   return (
     <div className="flex flex-col w-full">
@@ -60,20 +74,23 @@ export default function Home() {
         </div>
         {/* Blink debugged results show in dashboard with respective tabs. */}
         <div className="flex justify-between">
-          {isSubmitted && (
+          {searchParams.get("url") && (
             <div className="flex items-center justify-center">
               <div className="w-[30rem] -mt-12">
                 {/* Show preview of Blink */}
-                <BlinkPreview actionUrl={url} />
+                <BlinkPreview actionUrl={searchParams.get("url")!} />
               </div>
             </div>
           )}
           <Dashboard
             AccountList={simulatedData?.accounts!}
             Logs={simulatedData?.logs as string[]}
+            Signatures={simulatedData?.signatureDetails!}
           />
         </div>
       </div>
     </div>
   );
 }
+
+export default Home;

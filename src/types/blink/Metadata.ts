@@ -34,31 +34,31 @@ export interface BlinkTransaction {
 export interface AccountInfoObject {
   index: number;
   pubkey: PublicKey | string;
-  accountInfo: {
-    friendlyName?: string;
-    abbreviation?: string;
-    category?: string;
-    network?: string;
-    tags?: [];
-    logoURI?: string | null;
-    flag?: string | null;
-  };
+  accountInfo: AccountInfo[];
+}
+
+export interface AccountInfo {
+  friendlyName?: string;
+  abbreviation?: string;
+  category?: string;
+  network?: string;
+  tags?: [];
+  logoURI?: string | null;
+  flag?: string | null;
 }
 
 export interface SimulationResult {
   success: boolean;
   error?: string;
-  accounts: Array<{
-    index: number;
-    pubkey: PublicKey | string;
-    accountInfo?: AccountInfoObject;
-  }>;
+  accounts: Array<AccountInfoObject>;
   logs?: string[] | null;
   unitsConsumed?: number | null;
-  signatureDetails: Array<{
-    signature: string;
-    signer: string;
-    validity: "Valid" | "Invalid";
-    details: string;
-  }>;
+  signatureDetails: Array<SignatureDetails>;
+}
+
+export interface SignatureDetails {
+  signature: string;
+  signer: string;
+  validity: "Valid" | "Invalid";
+  details: string;
 }

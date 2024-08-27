@@ -1,4 +1,4 @@
-import WalletProvider from "@/context/Provider";
+import { WalletContextProvider } from "@/context/Provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
@@ -20,10 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <WalletProvider>
+        <WalletContextProvider>
           {children}
           <Toaster />
-        </WalletProvider>
+        </WalletContextProvider>
       </body>
     </html>
   );

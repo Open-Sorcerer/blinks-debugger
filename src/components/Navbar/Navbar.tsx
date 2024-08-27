@@ -1,6 +1,14 @@
 import InputForm from "@/components/InputForm/InputForm";
-import { UnifiedWalletButton } from "@jup-ag/wallet-adapter";
+import dynamic from "next/dynamic";
 import Image from "next/image";
+
+const WalletMultiButton = dynamic(
+  () =>
+    import("@solana/wallet-adapter-react-ui").then(
+      ({ WalletMultiButton }) => WalletMultiButton,
+    ),
+  { ssr: false },
+);
 
 interface NavbarProps {
   url: string;
@@ -32,7 +40,7 @@ export default function Navbar({ url, setUrl, getData }: NavbarProps) {
         </span>
       </div>
       <div className="flex md:w-[40%] justify-end">
-        <UnifiedWalletButton />
+        <WalletMultiButton />
       </div>
     </div>
   );
