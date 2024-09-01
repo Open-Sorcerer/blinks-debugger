@@ -1,6 +1,6 @@
 import { signatureSectionHeader } from "@/lib/constants";
 import { formatData } from "@/lib/utils";
-import { AccountInfoObject, SignatureDetails } from "@/types/blink/Metadata";
+import { AccountInfoObject, SignatureDetails } from "@/types/blink";
 import toast from "react-hot-toast";
 import { IoCopyOutline } from "react-icons/io5";
 

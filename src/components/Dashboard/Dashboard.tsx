@@ -1,7 +1,7 @@
 import ActionValidator from "@/components/ActionValidator/ActionValidator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dashboardTabs } from "@/lib/constants";
-import { AccountInfoObject, SignatureDetails } from "@/types/blink/Metadata";
+import { AccountInfoObject, SignatureDetails } from "@/types/blink";
 import Console from "../Console/Console";
 
 interface DashboardProps {
@@ -16,7 +16,7 @@ export default function Dashboard({
   Signatures,
 }: DashboardProps) {
   return (
-    <div className="mt-6 p-5 lg:w-[60%] bg-white border border-neutral-200 rounded-xl">
+    <div className="p-5 lg:w-[60%] h-fit bg-white border border-neutral-200 rounded-xl">
       <Tabs defaultValue="validate" className="w-full overflow-auto">
         <TabsList className="w-full bg-neutral-200 rounded-xl">
           {dashboardTabs.map((tab, index) => (

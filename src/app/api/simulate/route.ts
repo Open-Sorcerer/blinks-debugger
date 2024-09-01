@@ -1,5 +1,5 @@
 import { simulateTransaction } from "@/app/_actions";
-import { Cluster, SimulationResult } from "@/types/blink/Metadata";
+import { Cluster, SimulationResult } from "@/types/blink";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

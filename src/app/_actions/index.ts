@@ -7,7 +7,7 @@ import {
   ChessApiResponse,
   Cluster,
   SimulationResult,
-} from "@/types/blink/Metadata";
+} from "@/types/blink";
 import {
   Connection,
   PublicKey,

@@ -1,17 +1,16 @@
 "use client";
 
 import { fetchTransaction, simulateTransaction } from "@/app/_actions";
-
-import BlinkPreview from "@/components/BlinkPreview/BlinkPreview";
 import ConfigContainer from "@/components/ConfigContainer/ConfigContainer";
 import Dashboard from "@/components/Dashboard/Dashboard";
 import InputForm from "@/components/InputForm/InputForm";
 import Navbar from "@/components/Navbar/Navbar";
 import { validateURL } from "@/lib/helpers";
-import { Cluster, SimulationResult } from "@/types/blink/Metadata";
+import { Cluster, SimulationResult } from "@/types/blink";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
+import Blink from "../Blink/Blink";
 
 function Home() {
   const router = useRouter();
@@ -73,20 +72,20 @@ function Home() {
           />
         </div>
         {/* Blink debugged results show in dashboard with respective tabs. */}
-        <div className="flex justify-between">
-          {searchParams.get("url") && (
-            <div className="flex items-center justify-center">
-              <div className="w-[30rem] -mt-12">
-                {/* Show preview of Blink */}
-                <BlinkPreview actionUrl={searchParams.get("url")!} />
-              </div>
-            </div>
-          )}
+        <div className="flex gap-2 justify-between mt-6">
           <Dashboard
             AccountList={simulatedData?.accounts!}
             Logs={simulatedData?.logs as string[]}
             Signatures={simulatedData?.signatureDetails!}
           />
+          {searchParams.get("url") && (
+            <div className="flex items-center justify-center">
+              <div className="flex w-[30rem] items-center justify-center">
+                {/* Show preview of Blink */}
+                <Blink />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

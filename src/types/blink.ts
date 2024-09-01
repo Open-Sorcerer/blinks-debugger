@@ -5,6 +5,30 @@ export enum Cluster {
   Devnet = "devnet",
 }
 
+export interface Action {
+  label: string;
+  href: string;
+  parameters?: Parameter[];
+}
+
+export interface Parameter {
+  name: string;
+  label: string;
+}
+
+export interface Blink {
+  icon: string;
+  label: string;
+  title: string;
+  description: string;
+  links?: Links;
+  disabled?: boolean;
+}
+
+export interface Links {
+  actions: Action[];
+}
+
 export interface ChessApiResponse {
   icon: string;
   title: string;
