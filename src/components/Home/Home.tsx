@@ -1,15 +1,21 @@
 "use client";
 
-import { fetchTransaction, simulateTransaction } from "@/app/_actions";
+import {
+  fetchTransaction,
+  getValidations,
+  simulateTransaction,
+} from "@/app/_actions";
 import ConfigContainer from "@/components/ConfigContainer/ConfigContainer";
 import Dashboard from "@/components/Dashboard/Dashboard";
 import InputForm from "@/components/InputForm/InputForm";
 import Navbar from "@/components/Navbar/Navbar";
 import { validateURL } from "@/lib/helpers";
 import { Cluster, SimulationResult } from "@/types/blink";
+import { Validations } from "@/types/common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
+import toast from "react-hot-toast";
 import Blink from "../Blink/Blink";
 
 function Home() {
@@ -20,6 +26,15 @@ function Home() {
   const [address, setAddress] = useState<string>("");
   const [mode, setMode] = useState<boolean>(true);
   const [simulatedData, setSimulatedData] = useState<SimulationResult>();
+  const [validations, setValidations] = useState<Validations>({
+    isActionsJsonValid: false,
+    isGetResponseValid: false,
+    isOGImageValid: false,
+    isOptionsResultValid: false,
+    isPostResultValid: false,
+  });
+  const [getResponseData, setGetResponseData] = useState<any>();
+  const [postResponseData, setPostResponseData] = useState<any>();
 
   useEffect(() => {
     if (publicKey) {
@@ -27,22 +42,36 @@ function Home() {
     }
   }, [publicKey]);
 
+  const handleTransaction = async (transactionUrl: string) => {
+    router.push(`/?url=${encodeURIComponent(transactionUrl)}`);
+    const encodedTxn = await fetchTransaction(transactionUrl, address);
+    console.log("encoded", encodedTxn);
+    const simulation = await simulateTransaction(
+      encodedTxn?.transaction!,
+      Cluster.MainnetBeta,
+    );
+    console.log(simulation.accounts, simulation.logs);
+    setSimulatedData(simulation);
+  };
+
   const getData = async () => {
     try {
-      const actionUrl = await validateURL(url);
-      if (!actionUrl) {
-        return;
+      if (url.includes("localhost")) {
+        const validationData = await getValidations(url, address);
+        console.log("validationData", validationData);
+        setValidations(validationData?.validations as unknown as Validations);
+        setGetResponseData(validationData?.getData);
+        setPostResponseData(validationData?.postData);
+        await handleTransaction(url);
+      } else {
+        const actionUrl = await validateURL(url);
+        if (!actionUrl) {
+          return;
+        }
+        await handleTransaction(actionUrl);
       }
-      router.push(`/?url=${encodeURIComponent(actionUrl)}`);
-      const encodedTxn = await fetchTransaction(actionUrl, address);
-      console.log("encoded", encodedTxn);
-      const simulation = await simulateTransaction(
-        encodedTxn?.transaction!,
-        Cluster.MainnetBeta,
-      );
-      console.log(simulation.accounts, simulation.logs);
-      setSimulatedData(simulation);
     } catch (error) {
+      toast.error("Invalid Blink URL");
       console.error(error);
     }
   };
@@ -77,6 +106,7 @@ function Home() {
             AccountList={simulatedData?.accounts!}
             Logs={simulatedData?.logs as string[]}
             Signatures={simulatedData?.signatureDetails!}
+            Validations={validations}
           />
           {searchParams.get("url") && (
             <div className="flex items-center justify-center">

@@ -51,7 +51,7 @@ export default function RenderSingleButton({
       className="w-full"
       variant={"secondary"}
     >
-      {isLoading ? <Spinner /> : blink.label}
+      {isLoading ? <Spinner /> : blink?.label}
     </Button>
   );
 }

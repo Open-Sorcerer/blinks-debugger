@@ -2,18 +2,21 @@ import ActionValidator from "@/components/ActionValidator/ActionValidator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { dashboardTabs } from "@/lib/constants";
 import { AccountInfoObject, SignatureDetails } from "@/types/blink";
+import { Validations } from "@/types/common";
 import Console from "../Console/Console";
 
 interface DashboardProps {
   AccountList: Array<AccountInfoObject>;
   Logs: string[];
   Signatures: Array<SignatureDetails>;
+  Validations: Validations;
 }
 
 export default function Dashboard({
   AccountList,
   Logs,
   Signatures,
+  Validations,
 }: DashboardProps) {
   return (
     <div className="p-5 lg:w-[60%] h-fit bg-white border border-neutral-200 rounded-xl">
@@ -30,7 +33,7 @@ export default function Dashboard({
           ))}
         </TabsList>
         <TabsContent value="validate" className="max-h-[36rem]">
-          <ActionValidator />
+          <ActionValidator ActionsValidations={Validations} />
         </TabsContent>
         <TabsContent value="console">
           <Console

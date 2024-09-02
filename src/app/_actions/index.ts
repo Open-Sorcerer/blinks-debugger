@@ -49,6 +49,12 @@ export async function fetchTransaction(
 ): Promise<BlinkTransaction | null> {
   try {
     console.log("fetching transaction", blinkURL, address);
+
+    const getResponse = await fetch(blinkURL, {
+      method: "OPTIONS",
+    });
+    console.log("response", await getResponse.json());
+
     const response = await fetch(blinkURL, {
       method: "POST",
       body: JSON.stringify({ account: address }),
@@ -216,5 +222,54 @@ export async function simulateTransaction(
       accounts: [],
       signatureDetails: [],
     };
+  }
+}
+
+export async function getValidations(url: string, address: string) {
+  try {
+    const isActionsJsonValid = await checkValidActions(url);
+
+    const [optionsResponse, getResponse, postResponse] = await Promise.all([
+      fetch(url, { method: "OPTIONS" }),
+      fetch(url),
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify({ account: address }),
+      }),
+    ]);
+
+    const isOptionsResultValid = optionsResponse.ok;
+    const isGetResponseValid = getResponse.ok;
+    const isPostResultValid = postResponse.ok;
+
+    const getData = await getResponse.json();
+    const isOGImageValid = getData?.icon ? true : false;
+    const postData = await postResponse.json();
+
+    return {
+      validations: {
+        isActionsJsonValid,
+        isOptionsResultValid,
+        isGetResponseValid,
+        isPostResultValid,
+        isOGImageValid,
+      },
+      getData,
+      postData,
+    };
+  } catch (error) {
+    console.error("Error in getValidations:", error);
+    return null;
+  }
+}
+
+export async function checkValidActions(url: string) {
+  try {
+    const hostURL = `http://${url.split("/")[2]}`;
+    const response = await fetch(`${hostURL}/actions.json`);
+    return response.ok;
+  } catch (error) {
+    console.error("Error fetching actions:", error);
+    return false;
   }
 }

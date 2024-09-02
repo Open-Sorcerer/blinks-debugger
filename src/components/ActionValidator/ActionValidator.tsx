@@ -1,24 +1,43 @@
+import { Validations } from "@/types/common";
 import { FaCircleCheck, FaRegCircleXmark } from "react-icons/fa6";
 
-export default function ActionValidator() {
+interface ActionValidatorProps {
+  ActionsValidations: Validations;
+}
+
+export default function ActionValidator({
+  ActionsValidations: {
+    isActionsJsonValid,
+    isGetResponseValid,
+    isOptionsResultValid,
+    isPostResultValid,
+    isOGImageValid,
+  },
+}: ActionValidatorProps) {
+  function getIcon(isValid: boolean) {
+    return isValid ? (
+      <FaCircleCheck size={20} className="text-emerald-500" />
+    ) : (
+      <FaRegCircleXmark size={20} className="text-red-500" />
+    );
+  }
+
   return (
     <div className="flex flex-col gap-2 px-4">
       <span className="flex items-center gap-4 border-b border-neutral-200/60 text-neutral-700 py-2">
-        <FaCircleCheck size={20} className="text-emerald-500" /> actions.json
-        file
+        {getIcon(isActionsJsonValid)} actions.json
       </span>
       <span className="flex items-center gap-4 border-b border-neutral-200/60 text-neutral-700 py-2">
-        <FaCircleCheck size={20} className="text-emerald-500" /> options
+        {getIcon(isOptionsResultValid)} options
       </span>
       <span className="flex items-center gap-4 border-b border-neutral-200/60 text-neutral-700 py-2">
-        <FaRegCircleXmark size={20} className="text-red-500" /> open graph
-        metadata
+        {getIcon(isOGImageValid)} Image URL
       </span>
       <span className="flex items-center gap-4 border-b border-neutral-200/60 text-neutral-700 py-2">
-        <FaCircleCheck size={20} className="text-emerald-500" /> fc: image
+        {getIcon(isGetResponseValid)} Get Response
       </span>
       <span className="flex items-center gap-4 border-b border-neutral-200/60 text-neutral-700 py-2">
-        <FaRegCircleXmark size={20} className="text-red-500" /> fc: button
+        {getIcon(isPostResultValid)} POST Response
       </span>
     </div>
   );
