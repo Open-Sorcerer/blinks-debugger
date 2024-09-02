@@ -1,11 +1,35 @@
-import type { Action, Blink } from "@/types/blink";
+import useBlink from "@/hooks/useBlink";
+import type { Blink } from "@/types/blink";
+import { useEffect, useState } from "react";
 import RenderInputs from "../RenderInputs/RenderInputs";
 import RenderMultipleButtons from "../RenderMultipleButtons/RenderMultipleButtons";
 import RenderSingleButton from "../RenderSingleButton/RenderSingleButton";
 
-export default function Blink() {
-  if (false) {
-    // isLoading Skeleton
+interface BlinkProps {
+  url: string;
+}
+
+export default function Blink({ url }: BlinkProps) {
+  const { fetchBlink } = useBlink();
+  const [currentBlink, setCurrentBlink] = useState<Blink | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const blink = await fetchBlink(url);
+        console.log("blink", blink);
+        setCurrentBlink(blink);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    };
+    fetch();
+  }, [url]);
+
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full">Loading...</div>
     );
@@ -13,7 +37,7 @@ export default function Blink() {
   return (
     <div className="w-5/6 flex flex-col max-w-6xl bg-white gap-5 p-6 border border-neutral-200 rounded-2xl shadow-xl shadow-indigo-200">
       <img
-        src={"/logo.svg"}
+        src={currentBlink?.icon || ""}
         alt=""
         className="w-[400px] rounded-2xl object-contain aspect-square border border-neutral-100"
       />
@@ -22,9 +46,6 @@ export default function Blink() {
           <div className=" flex flex-col gap-4">
             <div className="flex flex-row items-center justify-between w-full">
               <div className="flex flex-row justify-start items-center gap-2">
-                <p className="font-inter text-[16px] font-semibold text-black">
-                  {true ? "Verified" : "Not verified"}
-                </p>
                 <div>
                   {true ? (
                     <svg
@@ -58,33 +79,33 @@ export default function Blink() {
               </div>
             </div>
             <div className=" flex flex-col gap-2">
-              <h3 className="font-semibold text-2xl font-inter">ABC XYZ</h3>
+              <h3 className="font-semibold text-2xl font-inter">
+                {currentBlink?.title}
+              </h3>
               <p className="font-inter text-sm font-medium text-black opacity-60">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui
-                unde nihil nostrum omnis, vero sit iste. Sequi voluptatum quo
-                minima optio inventore quam aliquam natus! Dolore nemo totam
-                aperiam quos!
+                {currentBlink?.description}
               </p>
             </div>
           </div>
         </div>
         <div className="mt-4 border border-black border-opacity-10 p-4 rounded-xl">
-          {true && (
+          {currentBlink?.links?.actions?.some(
+            (action) => !action.parameters,
+          ) && (
             <div className="flex mb-4 flex-wrap">
-              {[].map((action: Action, index) => {
+              {currentBlink.links.actions.map((action, index) => {
                 if (!action.parameters) {
                   return (
                     <RenderMultipleButtons
                       key={index}
                       action={action}
-                      disabled={false}
+                      disabled={currentBlink.disabled ?? false}
                       count={
-                        // currentBlink.blink.links?.actions?.filter(
-                        //   (action) => !action.parameters,
-                        // ).length || 0
-                        0
+                        currentBlink.links?.actions?.filter(
+                          (action) => !action.parameters,
+                        ).length || 0
                       }
-                      link={"currentBlink.website"}
+                      link="https://buythedip.trade"
                     />
                   );
                 }
@@ -92,24 +113,24 @@ export default function Blink() {
               })}
             </div>
           )}
-          {true ? (
+          {currentBlink?.links ? (
             <div className="flex flex-col gap-4">
-              {[].map((action: Action, index) =>
+              {currentBlink.links.actions.map((action, index) =>
                 action.parameters ? (
                   <RenderInputs
                     key={index}
                     action={action}
-                    disabled={false}
-                    link={"currentBlink.website"}
+                    disabled={currentBlink.disabled ?? false}
+                    link={"https://buythedip.trade"}
                   />
                 ) : null,
               )}
             </div>
           ) : (
             <RenderSingleButton
-              blink={{} as Blink}
-              link={"currentBlink?.website!"}
-              disabled={false}
+              blink={currentBlink!}
+              link={"https://buythedip.trade"}
+              disabled={currentBlink?.disabled ?? false}
             />
           )}
         </div>

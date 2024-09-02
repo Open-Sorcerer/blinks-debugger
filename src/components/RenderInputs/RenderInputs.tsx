@@ -21,7 +21,7 @@ export default function RenderInputs({
   const [isLoading, setIsLoading] = useState(false);
   const { fetchTransaction } = useBlink();
   const { publicKey, sendTransaction } = useWallet();
-  const host = new URL(link).hostname;
+  const host = new URL(link)?.hostname;
 
   const handlePress = async (link: string) => {
     try {

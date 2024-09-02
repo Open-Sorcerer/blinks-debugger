@@ -53,13 +53,8 @@ export async function fetchTransaction(
       method: "POST",
       body: JSON.stringify({ account: address }),
       headers: { Accept: "application/json" },
-      next: { revalidate: 60 },
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
+    console.log("response", response);
     const blinkTxn = await response.json();
     return blinkTxn;
   } catch (error) {

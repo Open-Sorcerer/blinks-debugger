@@ -1,64 +1,99 @@
 async function validateURL(url: string) {
-  let urlObj = new URL(url);
-  let baseUrl = `${urlObj.origin}${urlObj.pathname.replace(/\/$/, "")}`;
-  const queryParams = urlObj.search;
-
-  // Check if the URL contains '/api/' and trim it to the base URL
-  if (urlObj.pathname.includes("/api/")) {
-    baseUrl = `${urlObj.origin}`;
-    urlObj = new URL(baseUrl);
+  try {
+    const dialAPI = await fetch("https://dial.to/api/validate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ url }),
+    });
+    const response = (await dialAPI.json()) as APIResponse;
+    console.log(response);
+    return response.result.post[0]?.link;
+  } catch (error) {
+    console.error(error);
   }
-
-  const actionsUrl = `${baseUrl}/actions.json`;
-  const response = await fetch(actionsUrl);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${actionsUrl}`);
-  }
-
-  const actionsResponse: ActionBlink = await response.json();
-
-  // Iterate through each rule in actionsResponse
-  for (const action of actionsResponse.rules) {
-    const { pathPattern, apiPath } = action;
-
-    if (pathPattern === "/") {
-      return `${baseUrl}/${apiPath.replace(/^\//, "")}${queryParams}`;
-    }
-
-    // Construct regex pattern based on pathPattern
-    const regexPattern = `^${pathPattern
-      .replace(/\*\*/g, "(.*)")
-      .replace(/\*/g, "([^/]*)")}$`;
-    const pathRegex = new RegExp(regexPattern);
-
-    const match = urlObj.pathname.match(pathRegex);
-
-    if (match) {
-      // Extract matched parts from the regex
-      const capturedGroups = match.slice(1);
-
-      // Replace corresponding parts in apiPath
-      let newApiPath = apiPath;
-      capturedGroups.forEach((group, index) => {
-        newApiPath = newApiPath.replace(`*${index + 1}`, group);
-      });
-
-      // If newApiPath still contains **, replace it with the first captured group
-      if (newApiPath.includes("**")) {
-        newApiPath = newApiPath.replace("**", capturedGroups[0]);
-      }
-
-      return `${baseUrl}/${newApiPath.replace(/^\//, "")}${queryParams}`;
-    }
-  }
-}
-
-interface ActionBlink {
-  rules: Array<{
-    pathPattern: string;
-    apiPath: string;
-  }>;
 }
 
 export { validateURL };
+
+// Basic types
+type HTTPMethod = "GET" | "POST" | "OPTIONS";
+type Status = "ok" | "error";
+type URL = string;
+
+// Complex subtypes
+interface Availability {
+  status: Status;
+}
+
+interface CORSData {
+  isValid: boolean;
+  errors: CORSError[];
+}
+
+interface CORSError {
+  header: string;
+  requiredValue: string;
+  actualValue: string | null;
+}
+
+interface CORS {
+  status: Status;
+  data: CORSData;
+}
+
+interface ActionLink {
+  label: string;
+  href: URL;
+  parameters?: ActionParameter[];
+}
+
+interface ActionParameter {
+  name: string;
+  label: string;
+}
+
+interface ResponseData {
+  icon: URL;
+  title: string;
+  description: string;
+  links: {
+    actions: ActionLink[];
+  };
+}
+
+interface GetResponse {
+  status: Status;
+  data: ResponseData;
+}
+
+interface GetResult {
+  link: URL;
+  availability: Availability;
+  responseBody: GetResponse;
+  cors: CORS;
+}
+
+interface PostResult {
+  link: URL;
+  label: string;
+  availability: Availability;
+  cors: CORS;
+}
+
+interface OptionsResult {
+  link: URL;
+  availability: Availability;
+  cors: CORS;
+}
+
+// Main interface
+interface APIResponse {
+  type: string;
+  result: {
+    get: GetResult;
+    post: PostResult[];
+    options: OptionsResult;
+  };
+}

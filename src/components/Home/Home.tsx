@@ -82,7 +82,7 @@ function Home() {
             <div className="flex items-center justify-center">
               <div className="flex w-[30rem] items-center justify-center">
                 {/* Show preview of Blink */}
-                <Blink />
+                <Blink url={url} />
               </div>
             </div>
           )}
