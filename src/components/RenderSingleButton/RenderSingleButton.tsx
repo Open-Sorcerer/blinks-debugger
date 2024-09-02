@@ -1,5 +1,8 @@
+import useBlink from "@/hooks/useBlink";
 import { Blink } from "@/types/blink";
+import { connection, getRawTransaction } from "@/utils/helper";
 import { useWallet } from "@jup-ag/wallet-adapter";
+import { Transaction } from "@solana/web3.js";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import Spinner from "../Spinner/Spinner";
@@ -15,22 +18,22 @@ export default function RenderSingleButton({
   disabled: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  //   const { fetchTransaction } = useBlink();
+  const { fetchTransaction } = useBlink();
   const { publicKey, sendTransaction } = useWallet();
 
   const handlePress = async (link: string) => {
     try {
       setIsLoading(true);
       if (!publicKey) return;
-      //   const result = await fetchTransaction(link, publicKey!.toBase58());
-      //   let transaction = result.transaction;
-      //   const tx = await getRawTransaction(transaction);
-      //   const sign = await sendTransaction(tx as Transaction, connection);
-      //   if (result?.message) {
-      //     toast.success(result.message);
-      //   } else {
-      //     toast.success("Transaction successfull");
-      //   }
+      const result = await fetchTransaction(link, publicKey!.toBase58());
+      let transaction = result?.transaction;
+      const tx = await getRawTransaction(transaction!);
+      const sign = await sendTransaction(tx as Transaction, connection);
+      if (result?.message) {
+        toast.success(result.message);
+      } else {
+        toast.success("Transaction successfull");
+      }
     } catch (e) {
       toast.error("Failed to submit transaction");
       console.error(e);

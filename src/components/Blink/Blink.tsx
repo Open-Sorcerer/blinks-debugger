@@ -2,7 +2,6 @@ import type { Action, Blink } from "@/types/blink";
 import RenderInputs from "../RenderInputs/RenderInputs";
 import RenderMultipleButtons from "../RenderMultipleButtons/RenderMultipleButtons";
 import RenderSingleButton from "../RenderSingleButton/RenderSingleButton";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Blink() {
   if (false) {
@@ -66,28 +65,6 @@ export default function Blink() {
                 minima optio inventore quam aliquam natus! Dolore nemo totam
                 aperiam quos!
               </p>
-            </div>
-          </div>
-          <div className="flex items-center justify-between mt-3">
-            <div className="flex items-center gap-4">
-              <Avatar className="w-8 h-8 md:w-11 md:h-11">
-                <AvatarImage src={"https://github.com/shadcn.png"} />
-                <AvatarFallback>NP</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col items-start">
-                <p className="font-medium text-black opacity-60 text-sm md:text-[13px] font-inter ">
-                  by
-                </p>
-                <p className="text-sm md:text-md font-medium font-inter text-gray-800">
-                  jason
-                </p>
-                <a href="#" className="hidden group" target="_blank">
-                  <p className="group-hover:underline text-gray-500 text-[12px] font-inter ">
-                    jason.bourne{" "}
-                    {/* {new URL(currentBlink!.website).hostname} */}
-                  </p>
-                </a>
-              </div>
             </div>
           </div>
         </div>

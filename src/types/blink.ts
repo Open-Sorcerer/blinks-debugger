@@ -86,3 +86,8 @@ export interface SignatureDetails {
   validity: "Valid" | "Invalid";
   details: string;
 }
+
+export interface TransactionData {
+  transaction: string;
+  message?: string;
+}
