@@ -30,14 +30,13 @@ export default function Navbar({ url, setUrl, getData }: NavbarProps) {
           />
           <p className="hidden lg:flex">Blinks Debugger</p>
         </span>
-        <span className="hidden md:flex items-center justify-center gap-2">
-          <InputForm
-            url={url}
-            setUrl={setUrl}
-            getData={getData}
-            className="min-w-[25rem]"
-          />
-        </span>
+        <InputForm
+          url={url}
+          setUrl={setUrl}
+          getData={getData}
+          inputClassName="min-w-[25rem]"
+          className="hidden md:flex items-center justify-center gap-2"
+        />
       </div>
       <div className="flex md:w-[40%] justify-end">
         <WalletMultiButton />

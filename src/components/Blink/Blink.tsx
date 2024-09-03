@@ -1,6 +1,7 @@
 import useBlink from "@/hooks/useBlink";
 import type { Blink } from "@/types/blink";
 import { useEffect, useState } from "react";
+import LoaderScreen from "../LoaderScreen/LoaderScreen";
 import RenderInputs from "../RenderInputs/RenderInputs";
 import RenderMultipleButtons from "../RenderMultipleButtons/RenderMultipleButtons";
 import RenderSingleButton from "../RenderSingleButton/RenderSingleButton";
@@ -20,9 +21,9 @@ export default function Blink({ url }: BlinkProps) {
         const blink = await fetchBlink(url);
         console.log("blink", blink);
         setCurrentBlink(blink);
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
+      } finally {
         setIsLoading(false);
       }
     };
@@ -30,16 +31,14 @@ export default function Blink({ url }: BlinkProps) {
   }, [url]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">Loading...</div>
-    );
+    return <LoaderScreen />;
   }
   return (
     <div className="w-5/6 flex flex-col max-w-6xl bg-white gap-5 p-6 border border-neutral-200 rounded-2xl shadow-xl shadow-indigo-200">
       <img
-        src={currentBlink?.icon || ""}
+        src={currentBlink?.icon || "/placeholder.png"}
         alt=""
-        className="w-[400px] rounded-2xl object-contain aspect-square border border-neutral-100"
+        className="w-[400px] rounded-2xl object-cover aspect-square border border-neutral-100"
       />
       <div className="w-full flex flex-col justify-between">
         <div className="flex flex-col gap-4">
@@ -54,7 +53,7 @@ export default function Blink({ url }: BlinkProps) {
             </div>
           </div>
         </div>
-        <div className="mt-4 border border-black border-opacity-10 p-4 rounded-xl">
+        <div className="mt-4">
           {currentBlink?.links?.actions?.some(
             (action) => !action.parameters,
           ) && (

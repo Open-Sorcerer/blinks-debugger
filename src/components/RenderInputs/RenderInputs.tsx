@@ -50,6 +50,7 @@ export default function RenderInputs({
           placeholder={parameter.label}
           key={parameter.name}
           name={parameter.name}
+          className="bg-transparent border border-neutral-300 rounded-xl"
         />
       ))}
       <Button
@@ -73,6 +74,7 @@ export default function RenderInputs({
             handlePress("https://" + host + actionUrl);
           }
         }}
+        className="bg-neutral-800 hover:bg-black rounded-xl"
       >
         {isLoading ? <Spinner /> : action.label}
       </Button>

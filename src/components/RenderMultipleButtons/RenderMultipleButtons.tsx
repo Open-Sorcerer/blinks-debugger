@@ -70,7 +70,7 @@ export default function RenderMultipleButtons({
           }
         }}
         variant={"secondary"}
-        className="w-full"
+        className="w-full bg-neutral-800 hover:bg-black rounded-xl"
         size={"lg"}
       >
         {isLoading ? <Spinner /> : action.label}

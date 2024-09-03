@@ -37,6 +37,8 @@ function Home() {
   });
   const [getResponseData, setGetResponseData] = useState<any>();
   const [postResponseData, setPostResponseData] = useState<any>();
+  const [isValidating, setIsValidating] = useState<boolean>(true);
+  const [isSimulating, setIsSimulating] = useState<boolean>(true);
 
   useEffect(() => {
     if (publicKey) {
@@ -54,6 +56,7 @@ function Home() {
     );
     console.log(simulation.accounts, simulation.logs);
     setSimulatedData(simulation);
+    setIsSimulating(false);
   };
 
   const getData = async () => {
@@ -90,6 +93,8 @@ function Home() {
     } catch (error) {
       toast.error("Invalid Blink URL");
       console.error(error);
+    } finally {
+      setIsValidating(false);
     }
   };
 
@@ -104,10 +109,13 @@ function Home() {
     <div className="flex flex-col w-full">
       <Navbar url={url} setUrl={setUrl} getData={getData} />
       <div className="px-5 md:px-10">
-        <div className="flex md:hidden items-center justify-center gap-2 mt-8 w-full">
-          {/* Takes input of blink url */}
-          <InputForm url={url} setUrl={setUrl} getData={getData} />
-        </div>
+        {/* Takes input of blink url */}
+        <InputForm
+          url={url}
+          setUrl={setUrl}
+          getData={getData}
+          className="flex md:hidden items-center justify-center gap-2 mt-8 w-full"
+        />
         <div className="flex gap-4 items-center justify-end mt-5">
           {/* Set environment and identifier from Config */}
           <ConfigContainer
@@ -118,24 +126,26 @@ function Home() {
           />
         </div>
         {/* Blink debugged results show in dashboard with respective tabs. */}
-        <div className="flex gap-2 justify-between mt-6">
-          <Dashboard
-            AccountList={simulatedData?.accounts!}
-            Logs={simulatedData?.logs as string[]}
-            Signatures={simulatedData?.signatureDetails!}
-            Validations={validations}
-            GetResponse={JSON.stringify(getResponseData)}
-            PostResponse={JSON.stringify(postResponseData)}
-          />
-          {searchParams.get("url") && (
-            <div className="flex items-center justify-center">
-              <div className="flex w-[30rem] items-center justify-center">
+        {searchParams.get("url") && (
+          <div className="flex gap-2 items-start justify-between mt-6">
+            <Dashboard
+              AccountList={simulatedData?.accounts!}
+              Logs={simulatedData?.logs as string[]}
+              Signatures={simulatedData?.signatureDetails!}
+              Validations={validations}
+              GetResponse={JSON.stringify(getResponseData)}
+              PostResponse={JSON.stringify(postResponseData)}
+              isValidating={isValidating}
+              isSimulating={isSimulating}
+            />
+            <div className="flex justify-center mb-10">
+              <div className="flex w-[30rem]">
                 {/* Show preview of Blink */}
                 <Blink url={url} />
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -10,5 +10,5 @@ export function formatAddress(address: string) {
 }
 
 export function formatData(data: string) {
-  return data.length > 15 ? `${data.slice(0, 14)}...` : data;
+  return data.length > 12 ? `${data.slice(0, 12)}...` : data;
 }

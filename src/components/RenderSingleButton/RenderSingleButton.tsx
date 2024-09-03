@@ -48,7 +48,7 @@ export default function RenderSingleButton({
       onClick={async () => {
         handlePress(link);
       }}
-      className="w-full"
+      className="w-full bg-neutral-800 hover:bg-black rounded-xl"
       variant={"secondary"}
     >
       {isLoading ? <Spinner /> : blink?.label}

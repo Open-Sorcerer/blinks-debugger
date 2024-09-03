@@ -5,7 +5,8 @@ interface InputFormProps {
   url: string;
   setUrl: (url: string) => void;
   getData: () => void;
-  className?: string;
+  className: string;
+  inputClassName?: string;
 }
 
 export default function InputForm({
@@ -13,14 +14,15 @@ export default function InputForm({
   setUrl,
   getData,
   className,
+  inputClassName,
 }: InputFormProps) {
   return (
-    <>
+    <form className={className} action={getData}>
       <Input
         onChange={(e) => setUrl(e.target.value)}
         className={
           `bg-[#fff] border border-neutral-200 shadow ` +
-          `${className && className}`
+          `${inputClassName && inputClassName}`
         }
         value={url}
         placeholder="Enter URL"
@@ -31,6 +33,6 @@ export default function InputForm({
       >
         Submit
       </Button>
-    </>
+    </form>
   );
 }

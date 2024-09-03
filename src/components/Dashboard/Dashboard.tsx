@@ -4,6 +4,8 @@ import { dashboardTabs } from "@/lib/constants";
 import { AccountInfoObject, SignatureDetails } from "@/types/blink";
 import { Validations } from "@/types/common";
 import Console from "../Console/Console";
+import LoaderScreen from "../LoaderScreen/LoaderScreen";
+import Requests from "../Requests/Requests";
 
 interface DashboardProps {
   AccountList: Array<AccountInfoObject>;
@@ -12,6 +14,8 @@ interface DashboardProps {
   Validations: Validations;
   GetResponse: string;
   PostResponse: string;
+  isValidating: boolean;
+  isSimulating: boolean;
 }
 
 export default function Dashboard({
@@ -21,6 +25,8 @@ export default function Dashboard({
   Validations,
   GetResponse,
   PostResponse,
+  isValidating,
+  isSimulating,
 }: DashboardProps) {
   return (
     <div className="p-5 lg:w-[60%] h-fit bg-white border border-neutral-200 rounded-xl">
@@ -37,32 +43,29 @@ export default function Dashboard({
           ))}
         </TabsList>
         <TabsContent value="validate" className="max-h-[36rem]">
-          <ActionValidator ActionsValidations={Validations} />
+          {isValidating ? (
+            <LoaderScreen />
+          ) : (
+            <ActionValidator ActionsValidations={Validations} />
+          )}
         </TabsContent>
         <TabsContent value="console">
-          <Console
-            AccountList={AccountList}
-            Logs={Logs}
-            Signatures={Signatures}
-          />
+          {isSimulating ? (
+            <LoaderScreen />
+          ) : (
+            <Console
+              AccountList={AccountList}
+              Logs={Logs}
+              Signatures={Signatures}
+            />
+          )}
         </TabsContent>
         <TabsContent value="request">
-          <div className="flex flex-col gap-4">
-            <div className="text-lg font-semibold">Get Response</div>
-            <div className="bg-neutral-200 rounded-xl p-4">
-              <pre className="whitespace-pre-wrap break-words w-full overflow-x-auto">
-                {GetResponse &&
-                  JSON.stringify(JSON.parse(GetResponse), null, 2)}
-              </pre>
-            </div>
-            <div className="text-lg font-semibold">Post Response</div>
-            <div className="bg-neutral-200 rounded-xl p-4">
-              <pre className="whitespace-pre-wrap break-words w-full overflow-x-auto">
-                {PostResponse &&
-                  JSON.stringify(JSON.parse(PostResponse), null, 2)}
-              </pre>
-            </div>
-          </div>
+          {isValidating ? (
+            <LoaderScreen />
+          ) : (
+            <Requests GetResponse={GetResponse} PostResponse={PostResponse} />
+          )}
         </TabsContent>
       </Tabs>
     </div>
