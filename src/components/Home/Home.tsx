@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  checkValidActions,
   fetchTransaction,
   getValidations,
   simulateTransaction,
@@ -66,10 +67,9 @@ function Home() {
       } else {
         const actionsData = await validateURL(url);
         const actionUrl = actionsData?.result?.post[0]?.link;
-        console.log("actionsData", actionsData);
+        const isActionsJsonValid = await checkValidActions(url);
         const validationData = {
-          isActionsJsonValid:
-            actionsData?.result?.actionsJson?.validity?.status === "ok",
+          isActionsJsonValid: isActionsJsonValid,
           isGetResponseValid:
             actionsData?.result?.get?.responseBody?.status === "ok",
           isOGImageValid: actionsData?.result?.get?.responseBody?.data?.icon,
