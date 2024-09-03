@@ -32,6 +32,7 @@ function Home() {
     isOGImageValid: false,
     isOptionsResultValid: false,
     isPostResultValid: false,
+    isCORSEnabled: false,
   });
   const [getResponseData, setGetResponseData] = useState<any>();
   const [postResponseData, setPostResponseData] = useState<any>();
@@ -43,9 +44,9 @@ function Home() {
   }, [publicKey]);
 
   const handleTransaction = async (transactionUrl: string) => {
-    router.push(`/?url=${encodeURIComponent(transactionUrl)}`);
+    router.push(`/?url=${encodeURIComponent(url)}`);
     const encodedTxn = await fetchTransaction(transactionUrl, address);
-    console.log("encoded", encodedTxn);
+    setPostResponseData(encodedTxn);
     const simulation = await simulateTransaction(
       encodedTxn?.transaction!,
       Cluster.MainnetBeta,
@@ -61,10 +62,26 @@ function Home() {
         console.log("validationData", validationData);
         setValidations(validationData?.validations as unknown as Validations);
         setGetResponseData(validationData?.getData);
-        setPostResponseData(validationData?.postData);
         await handleTransaction(url);
       } else {
-        const actionUrl = await validateURL(url);
+        const actionsData = await validateURL(url);
+        const actionUrl = actionsData?.result?.post[0]?.link;
+        console.log("actionsData", actionsData);
+        const validationData = {
+          isActionsJsonValid:
+            actionsData?.result?.actionsJson?.validity?.status === "ok",
+          isGetResponseValid:
+            actionsData?.result?.get?.responseBody?.status === "ok",
+          isOGImageValid: actionsData?.result?.get?.responseBody?.data?.icon,
+          isOptionsResultValid:
+            actionsData?.result?.options?.availability?.status === "ok",
+          isPostResultValid:
+            actionsData?.result?.post[0]?.availability?.status === "ok",
+          isCORSEnabled: actionsData?.result?.get?.cors?.status === "ok",
+        };
+        setValidations(validationData as unknown as Validations);
+        setGetResponseData(actionsData?.result?.get?.responseBody);
+        setPostResponseData(actionsData?.result?.post[0]);
         if (!actionUrl) {
           return;
         }
@@ -107,6 +124,8 @@ function Home() {
             Logs={simulatedData?.logs as string[]}
             Signatures={simulatedData?.signatureDetails!}
             Validations={validations}
+            GetResponse={JSON.stringify(getResponseData)}
+            PostResponse={JSON.stringify(postResponseData)}
           />
           {searchParams.get("url") && (
             <div className="flex items-center justify-center">

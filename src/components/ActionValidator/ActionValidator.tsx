@@ -12,6 +12,7 @@ export default function ActionValidator({
     isOptionsResultValid,
     isPostResultValid,
     isOGImageValid,
+    isCORSEnabled,
   },
 }: ActionValidatorProps) {
   function getIcon(isValid: boolean) {
@@ -38,6 +39,9 @@ export default function ActionValidator({
       </span>
       <span className="flex items-center gap-4 border-b border-neutral-200/60 text-neutral-700 py-2">
         {getIcon(isPostResultValid)} POST Response
+      </span>
+      <span className="flex items-center gap-4 border-b border-neutral-200/60 text-neutral-700 py-2">
+        {getIcon(isCORSEnabled)} CORS Enabled
       </span>
     </div>
   );

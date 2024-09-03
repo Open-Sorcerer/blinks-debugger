@@ -4,4 +4,5 @@ export interface Validations {
   isOptionsResultValid: boolean;
   isPostResultValid: boolean;
   isOGImageValid: boolean;
+  isCORSEnabled: boolean;
 }

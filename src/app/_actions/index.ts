@@ -53,14 +53,12 @@ export async function fetchTransaction(
     const getResponse = await fetch(blinkURL, {
       method: "OPTIONS",
     });
-    console.log("response", await getResponse.json());
 
     const response = await fetch(blinkURL, {
       method: "POST",
       body: JSON.stringify({ account: address }),
       headers: { Accept: "application/json" },
     });
-    console.log("response", response);
     const blinkTxn = await response.json();
     return blinkTxn;
   } catch (error) {
@@ -244,7 +242,9 @@ export async function getValidations(url: string, address: string) {
 
     const getData = await getResponse.json();
     const isOGImageValid = getData?.icon ? true : false;
-    const postData = await postResponse.json();
+
+    const isCORSEnabled =
+      optionsResponse.headers.get("Access-Control-Allow-Origin") === "*";
 
     return {
       validations: {
@@ -253,9 +253,9 @@ export async function getValidations(url: string, address: string) {
         isGetResponseValid,
         isPostResultValid,
         isOGImageValid,
+        isCORSEnabled,
       },
       getData,
-      postData,
     };
   } catch (error) {
     console.error("Error in getValidations:", error);
