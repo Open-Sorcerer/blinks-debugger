@@ -16,7 +16,6 @@ function BlinkPreview({ actionUrl }: BlinkPreviewProps) {
     const fetchAction = async () => {
       try {
         const fetchedAction = await Action.fetch(actionUrl);
-        console.log({ fetchedAction });
         setAction(fetchedAction);
       } catch {
         setAction(null);

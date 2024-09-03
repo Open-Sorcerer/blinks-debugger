@@ -23,7 +23,6 @@ export default function RenderMultipleButtons({
   const { fetchTransaction } = useBlink();
   const { publicKey, sendTransaction } = useWallet();
   const host = new URL(link).hostname;
-  console.log("action", action);
 
   const handlePress = async (link: string) => {
     try {
@@ -31,7 +30,6 @@ export default function RenderMultipleButtons({
       if (!publicKey) return;
       const result = await fetchTransaction(link, publicKey!.toBase58());
       let transaction = result?.transaction;
-      console.log(result);
       const tx = await getRawTransaction(transaction!);
       const sign = await sendTransaction(tx as Transaction, connection);
       if (result?.message) {

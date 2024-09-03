@@ -54,19 +54,19 @@ function Home() {
       encodedTxn?.transaction!,
       Cluster.MainnetBeta,
     );
-    console.log(simulation.accounts, simulation.logs);
     setSimulatedData(simulation);
     setIsSimulating(false);
   };
 
   const getData = async () => {
     try {
+      setIsValidating(true);
+      setIsSimulating(true);
+      await handleTransaction(url);
       if (url.includes("localhost")) {
         const validationData = await getValidations(url, address);
-        console.log("validationData", validationData);
         setValidations(validationData?.validations as unknown as Validations);
         setGetResponseData(validationData?.getData);
-        await handleTransaction(url);
       } else {
         const actionsData = await validateURL(url);
         const actionUrl = actionsData?.result?.post[0]?.link;
@@ -84,17 +84,14 @@ function Home() {
         };
         setValidations(validationData as unknown as Validations);
         setGetResponseData(actionsData?.result?.get?.responseBody);
-        setPostResponseData(actionsData?.result?.post[0]);
         if (!actionUrl) {
           return;
         }
-        await handleTransaction(actionUrl);
       }
+      setIsValidating(false);
     } catch (error) {
       toast.error("Invalid Blink URL");
       console.error(error);
-    } finally {
-      setIsValidating(false);
     }
   };
 
@@ -123,6 +120,7 @@ function Home() {
             setAddress={setAddress}
             mode={mode}
             setMode={setMode}
+            refresh={getData}
           />
         </div>
         {/* Blink debugged results show in dashboard with respective tabs. */}

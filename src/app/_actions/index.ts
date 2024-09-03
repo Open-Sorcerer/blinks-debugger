@@ -48,18 +48,13 @@ export async function fetchTransaction(
   address: string,
 ): Promise<BlinkTransaction | null> {
   try {
-    console.log("fetching transaction", blinkURL, address);
-
-    const getResponse = await fetch(blinkURL, {
-      method: "OPTIONS",
-    });
-
     const response = await fetch(blinkURL, {
       method: "POST",
       body: JSON.stringify({ account: address }),
       headers: { Accept: "application/json" },
     });
     const blinkTxn = await response.json();
+    console.log("blinkTxn", blinkTxn);
     return blinkTxn;
   } catch (error) {
     console.error("Error fetching transaction:", error);
@@ -71,7 +66,6 @@ export async function simulateTransaction(
   encodedTransaction: string,
   cluster: Cluster,
 ): Promise<SimulationResult> {
-  console.log("encodedTransaction", encodedTransaction);
   try {
     const connection = new Connection(
       cluster === Cluster.MainnetBeta
@@ -265,7 +259,9 @@ export async function getValidations(url: string, address: string) {
 
 export async function checkValidActions(url: string) {
   try {
-    const hostURL = `http://${url.split("/")[2]}`;
+    console.log("url", url);
+    const hostURL = url.split("/").slice(0, 3).join("/");
+    console.log("hostURL", hostURL);
     const response = await fetch(`${hostURL}/actions.json`);
     return response.ok;
   } catch (error) {

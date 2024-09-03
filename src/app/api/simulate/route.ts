@@ -12,8 +12,6 @@ export async function POST(req: NextRequest) {
   if (simulate.accounts) {
     for (let index = 0; index < simulate.accounts.length; index++) {
       const accountInfo = simulate.accounts[index];
-
-      console.log("accountInfo", accountInfo.accountInfo[0]);
     }
   }
 

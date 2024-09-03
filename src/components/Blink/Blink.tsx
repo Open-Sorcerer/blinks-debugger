@@ -19,7 +19,6 @@ export default function Blink({ url }: BlinkProps) {
     const fetch = async () => {
       try {
         const blink = await fetchBlink(url);
-        console.log("blink", blink);
         setCurrentBlink(blink);
       } catch (error) {
         console.error(error);

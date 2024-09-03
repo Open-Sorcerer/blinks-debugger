@@ -19,6 +19,7 @@ interface ConfigContainerProps {
   setAddress: (address: string) => void;
   mode: boolean;
   setMode: (mode: boolean) => void;
+  refresh: () => void;
 }
 
 export default function ConfigContainer({
@@ -26,6 +27,7 @@ export default function ConfigContainer({
   setAddress,
   mode,
   setMode,
+  refresh,
 }: ConfigContainerProps) {
   return (
     <>
@@ -67,7 +69,7 @@ export default function ConfigContainer({
       <Button
         className="bg-white border border-neutral-300 px-3 py-[1.4rem] transition-colors duration-100 delay-100 hover:bg-neutral-50"
         onClick={() => {
-          // TODO: Add revalidate blink
+          refresh();
         }}
       >
         <LuRefreshCcw size={24} className="text-neutral-600" />

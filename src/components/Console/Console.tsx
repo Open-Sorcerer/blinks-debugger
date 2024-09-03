@@ -33,12 +33,6 @@ export default function Console({
           <div className="flex flex-col gap-1 pt-2">
             {Signatures?.map(
               ({ signature, signer, validity, details }, index) => {
-                console.log("signature", {
-                  signature,
-                  signer,
-                  validity,
-                  details,
-                });
                 return (
                   <span
                     className="grid grid-cols-[80px_200px_180px_150px_100px] py-1 text-neutral-700 border-b border-neutral-100"
@@ -114,7 +108,6 @@ export default function Console({
         </span>
         <div className="flex flex-col gap-1 p-3 overflow-auto scroll-smooth scrollbar">
           {Logs?.map((data, index) => {
-            console.log("data", data);
             return (
               <span
                 className="grid grid-cols-[40px_80px] items-center text-neutral-700"
