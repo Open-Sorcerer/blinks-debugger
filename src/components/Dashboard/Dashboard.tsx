@@ -4,8 +4,10 @@ import { dashboardTabs } from "@/lib/constants";
 import { AccountInfoObject, SignatureDetails } from "@/types/blink";
 import { Validations } from "@/types/common";
 import Console from "../Console/Console";
-import LoaderScreen from "../LoaderScreen/LoaderScreen";
 import Requests from "../Requests/Requests";
+import ActionValidatorSkeleton from "../Skeletons/ActionValidatorSkeleton";
+import ConsoleSkeleton from "../Skeletons/ConsoleSkeleton";
+import RequestsSkeleton from "../Skeletons/RequestsSkeleton";
 
 interface DashboardProps {
   AccountList: Array<AccountInfoObject>;
@@ -44,14 +46,14 @@ export default function Dashboard({
         </TabsList>
         <TabsContent value="validate" className="max-h-[36rem]">
           {isValidating ? (
-            <LoaderScreen />
+            <ActionValidatorSkeleton />
           ) : (
             <ActionValidator ActionsValidations={Validations} />
           )}
         </TabsContent>
         <TabsContent value="console">
           {isSimulating ? (
-            <LoaderScreen />
+            <ConsoleSkeleton />
           ) : (
             <Console
               AccountList={AccountList}
@@ -62,7 +64,7 @@ export default function Dashboard({
         </TabsContent>
         <TabsContent value="request">
           {isValidating ? (
-            <LoaderScreen />
+            <RequestsSkeleton />
           ) : (
             <Requests GetResponse={GetResponse} PostResponse={PostResponse} />
           )}
