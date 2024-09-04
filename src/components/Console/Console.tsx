@@ -18,6 +18,9 @@ export default function Console({
   return (
     <div className="flex flex-col gap-4 max-h-[34rem] scroll-smooth scrollbar">
       {/* SIGNATURE */}
+      {AccountList.length === 0 && (
+        <span>Simulation fails if now default button</span>
+      )}
       <div className="flex flex-col border border-neutral-200 rounded-xl p-[2px]">
         <span className="bg-neutral-100 text-neutral-700 font-medium px-4 py-2.5 rounded-t-xl">
           Signatures

@@ -119,7 +119,10 @@ function Home() {
             address={address}
             setAddress={setAddress}
             mode={mode}
-            setMode={setMode}
+            setMode={() => {
+              setMode(!mode);
+              setConnectionType(!mode);
+            }}
             refresh={getData}
           />
         </div>
