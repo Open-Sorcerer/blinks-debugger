@@ -1,5 +1,6 @@
 "use client";
 
+import useConnectionStore from "@/hooks/useConnectionStore";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
   ConnectionProvider,
@@ -17,7 +18,11 @@ interface WalletProps {
 
 export const WalletContextProvider = ({ children }: WalletProps) => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
-  const network = WalletAdapterNetwork.Devnet;
+  const { type } = useConnectionStore();
+  const network =
+    type === "devnet"
+      ? WalletAdapterNetwork.Devnet
+      : WalletAdapterNetwork.Mainnet;
 
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);

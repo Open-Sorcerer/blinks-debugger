@@ -1,6 +1,7 @@
 import useBlink from "@/hooks/useBlink";
+import useConnectionStore from "@/hooks/useConnectionStore";
 import { Action } from "@/types/blink";
-import { connection, getRawTransaction } from "@/utils/helper";
+import { getRawTransaction } from "@/utils/helper";
 import { useWallet } from "@jup-ag/wallet-adapter";
 import { Transaction } from "@solana/web3.js";
 import { useState } from "react";
@@ -22,6 +23,7 @@ export default function RenderInputs({
   const { fetchTransaction } = useBlink();
   const { publicKey, sendTransaction } = useWallet();
   const host = new URL(link)?.hostname;
+  const { connection } = useConnectionStore();
 
   const handlePress = async (link: string) => {
     try {
@@ -30,7 +32,7 @@ export default function RenderInputs({
       const result = await fetchTransaction(link, publicKey!.toBase58());
       let transaction = result?.transaction;
       const tx = await getRawTransaction(transaction!);
-      const sign = await sendTransaction(tx as Transaction, connection);
+      await sendTransaction(tx as Transaction, connection);
       if (result?.message) {
         toast.success(result.message);
       } else {

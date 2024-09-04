@@ -1,6 +1,7 @@
 import useBlink from "@/hooks/useBlink";
+import useConnectionStore from "@/hooks/useConnectionStore";
 import { Blink } from "@/types/blink";
-import { connection, getRawTransaction } from "@/utils/helper";
+import { getRawTransaction } from "@/utils/helper";
 import { useWallet } from "@jup-ag/wallet-adapter";
 import { Transaction } from "@solana/web3.js";
 import { useState } from "react";
@@ -20,6 +21,7 @@ export default function RenderSingleButton({
   const [isLoading, setIsLoading] = useState(false);
   const { fetchTransaction } = useBlink();
   const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnectionStore();
 
   const handlePress = async (link: string) => {
     try {

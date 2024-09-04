@@ -1,4 +1,4 @@
-import { Connection, Transaction, VersionedTransaction } from "@solana/web3.js";
+import { Transaction, VersionedTransaction } from "@solana/web3.js";
 
 async function getRawTransaction(
   encodedTransaction: string,
@@ -16,9 +16,4 @@ async function getRawTransaction(
   return recoveredTransaction;
 }
 
-const connection = new Connection(
-  "https://api.mainnet-beta.solana.com",
-  "confirmed",
-);
-
-export { connection, getRawTransaction };
+export { getRawTransaction };
