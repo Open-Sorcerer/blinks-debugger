@@ -121,7 +121,7 @@ function Home() {
             mode={mode}
             setMode={() => {
               setMode(!mode);
-              setConnectionType(!mode);
+              // setConnectionType(!mode);
             }}
             refresh={getData}
           />
